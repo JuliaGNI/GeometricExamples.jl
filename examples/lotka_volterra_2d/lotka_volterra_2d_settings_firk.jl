@@ -3,7 +3,7 @@ const out_dir   = "../../docs/src/integrators/runge_kutta/lotka_volterra_2d/"
 const run_id    = "lotka_volterra_2d_firk"
 
 # create list of figures to put in list
-figures_custom = (,)
+figures_custom = ()
 
 include("lotka_volterra_2d_settings.jl")
 
