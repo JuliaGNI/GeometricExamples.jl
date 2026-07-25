@@ -121,6 +121,9 @@ constructors, `Pkg.installed`, `Pkg.dir`, `readstring`, `info`/`warn`, `linspace
   `+1` — so the projection's type cannot tell them apart. Run headlines are now labelled from the
   run ID, which records which was asked for.
 
+- The default branch is renamed from `master` to `main`. The `Documentation` workflow triggers on it
+  and `deploydocs` takes it as its `devbranch`.
+
 ### Removed
 
 - **`src/generate_html.jl`**, the bespoke HTML gallery generator: its `get_config_dictionary()` no

@@ -70,7 +70,7 @@ makedocs(;
 if get(ENV, "DEPLOY_DOCS", "true") == "true"
     deploydocs(;
         repo="github.com/DDMGNI/GeometricExamples.jl",
-        devbranch="master"
+        devbranch="main"
     )
 else
     @warn "Incomplete weave run – skipping deploydocs. The built site is kept as a CI artifact."
