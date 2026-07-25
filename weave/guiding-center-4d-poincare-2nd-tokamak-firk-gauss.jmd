@@ -1,0 +1,33 @@
+# Guiding Center 4d (Tokamak): 2nd Poincaré Integral Invariant with Gauss-Legendre Runge-Kutta Methods
+
+The second Poincaré integral invariant
+
+```math
+I_{2} = \int_{S} \omega_{ij} (q) \, dq^{i} \wedge dq^{j}
+```
+
+of the four-dimensional guiding centre dynamics, whose two-form ``\omega = d \vartheta`` is, like the
+one-form of the first invariant, state dependent: this is a *noncanonical* invariant rather than the
+canonical ``\int_S dp_i \wedge dq^i``.
+
+The equilibrium is the medium-size axisymmetric tokamak in cylindrical coordinates ``(R, Z,
+\varphi, u)``, and the surface a ``0.1 \times 0.1`` square in the poloidal plane about ``(R, Z) =
+(1.75, 0)``, at parallel velocity ``u = 0.5`` and magnetic moment ``\mu = 10^{-3}``. It is sampled at
+Padua points, one ensemble member each, and the advected surface is drawn in cartesian 3-space.
+
+Each method is run over the same time interval at four time steps, ``\Delta t \in \{10, 5, 2, 1\}``,
+whose relative errors are drawn as four curves in one figure. The pre-0.2 gallery gave every time
+step a page of its own; together they show how fast a method loses the invariant as the time step is
+coarsened, which is what separates the methods here — over this interval the drift spans six orders
+of magnitude between them, while quadrupling the number of sample points changes the invariant in the
+tenth digit. The time interval and the number of sample points are reduced from the published ones,
+for the reasons given at the top of `src/guiding-center-4d-poincare.jl`.
+
+These are the fully implicit Runge-Kutta methods on the explicit formulation of the dynamics; see
+the [projected VPRK methods](guiding-center-4d-poincare-2nd-tokamak-vprk-gauss.md) for the
+variational one, and the [first invariant](../guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-firk-gauss.md)
+for the same methods on the advected loop.
+
+```julia
+run_poincare(:tokamak, odeproblem, "Guiding Center 4d Tokamak", tableaus_firk_gauss())
+```

@@ -27,7 +27,8 @@ jobs:
   # singular Lotka-Volterra gauge has no explicit pages (its `odeproblem` is the standard one's),
   # the point vortices add a convergence study, and the standard map carries the Poincaré integral
   # invariants instead of the trajectory diagnostics. The four guiding-centre orbits each get the
-  # implicit Runge-Kutta and projected VPRK families, as the pre-0.2 gallery ran them.
+  # implicit Runge-Kutta and projected VPRK families, as the pre-0.2 gallery ran them, and the
+  # guiding-centre Poincaré invariants the two geometries it computed them on.
   weave:
     name: Weave ${{ matrix.problem }} ${{ matrix.page }}
     runs-on: ubuntu-latest
@@ -87,6 +88,12 @@ jobs:
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-gauss }
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-srk3 }
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-radau }
+          - { problem: guiding-center-4d-poincare-1st, page: tokamak-firk-gauss }
+          - { problem: guiding-center-4d-poincare-1st, page: tokamak-vprk-gauss }
+          - { problem: guiding-center-4d-poincare-1st, page: symmetric-vprk-gauss }
+          - { problem: guiding-center-4d-poincare-2nd, page: tokamak-firk-gauss }
+          - { problem: guiding-center-4d-poincare-2nd, page: tokamak-vprk-gauss }
+          - { problem: guiding-center-4d-poincare-2nd, page: symmetric-vprk-gauss }
           - { problem: standard-map,                page: poincare-1st }
           - { problem: standard-map,                page: poincare-2nd }
     steps:

@@ -1,0 +1,36 @@
+# Guiding Center 4d (Symmetric Field): 2nd Poincaré Integral Invariant with Gauss-Legendre VPRK Methods and Projections
+
+The second Poincaré integral invariant
+
+```math
+I_{2} = \int_{S} \omega_{ij} (q) \, dq^{i} \wedge dq^{j}
+```
+
+of the four-dimensional guiding centre dynamics in the axisymmetric quadratic field ``B (x, y, z) =
+B_{0} (1 + x^{2} + y^{2}) \, e_{z}``, whose coordinates are cartesian, so that the figures show the
+advected surface in the coordinates it is defined in. The surface is
+
+```math
+q (\sigma, \tau) = \big( 0.5 (\sigma - 1/2) , \; 0.5 (\tau - 1/2) , \;
+                         0.1 \cos 2 \pi \sigma \cos 2 \pi \tau , \;
+                         0.5 + 0.01 \sin 2 \pi \sigma \sin 2 \pi \tau \big)
+```
+
+at magnetic moment ``\mu = 10^{-2}``: unlike the flat tokamak surface it is curved in the third
+component and varies in the parallel velocity as well.
+
+The dynamics is integrated in its variational formulation, with the Gauss-Legendre variational
+partitioned Runge-Kutta methods and each of the projections onto the constraint submanifold. This is
+the geometry the pre-0.2 gallery ran with the projected methods only, which is why it has no
+Gauss-Legendre Runge-Kutta page.
+
+Each method is run over the same time interval at four time steps, ``\Delta t \in \{10, 5, 2, 1\}``,
+whose relative errors are drawn as four curves in one figure. As for the
+[first invariant](../guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-symmetric-vprk-gauss.md), this equilibrium is the
+more benign of the two, and it is the methods rather than the time steps that the figures separate.
+The time interval and the number of sample points are reduced from the published ones, for the
+reasons given at the top of `src/guiding-center-4d-poincare.jl`.
+
+```julia
+run_poincare(:symmetric, iodeproblem, "Guiding Center 4d Symmetric Field", tableaus_vprk_gauss())
+```

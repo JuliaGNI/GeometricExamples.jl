@@ -179,6 +179,30 @@ function _plot_figure_md(file, name, filename)
 end
 
 
+# Write the page of one run as a flat list of figures, in the order given. This is the plain
+# counterpart of `write_plots` below, for the pages whose figures do not fall into the fixed
+# section skeleton of a trajectory run — the Poincaré invariant pages, whose figures are the
+# invariant error and the advected loop or surface.
+function _write_page(dir, file, name, fig_suff, suffixes)
+    omitted = String[]
+
+    open(file * ".md", "w") do f
+        show(f, "text/markdown", Markdown.parse("# $name"))
+        _linebreak(f)
+
+        for suffix in suffixes
+            _plot_figure_md(f, name, "$(dir)/$(file)$(suffix)$(fig_suff)") || push!(omitted, suffix)
+        end
+    end
+
+    isempty(omitted) ||
+        @warn("Omitted $(length(omitted)) figures from $(file).md that were not produced: " *
+              join(omitted, ", "))
+
+    nothing
+end
+
+
 # Write the page collecting all figures of one run. Must be called *after* `run_integrator`, so
 # that the figures it references already exist on disk. `invariants` is the list of secondary
 # invariants of the problem (see `run_list`), whose sections are appended after the energy;

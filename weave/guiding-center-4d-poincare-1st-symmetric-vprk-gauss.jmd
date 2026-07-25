@@ -1,0 +1,36 @@
+# Guiding Center 4d (Symmetric Field): 1st Poincaré Integral Invariant with Gauss-Legendre VPRK Methods and Projections
+
+The first Poincaré integral invariant
+
+```math
+I_{1} = \oint_{\gamma} \vartheta_{i} (q) \, dq^{i}
+```
+
+of the four-dimensional guiding centre dynamics in the axisymmetric quadratic field ``B (x, y, z) =
+B_{0} (1 + x^{2} + y^{2}) \, e_{z}``, whose coordinates are cartesian, so that the figures show the
+advected loop in the coordinates it is defined in. The loop is
+
+```math
+q (\tau) = \big( 0.5 \cos 2 \pi \tau , \; 0.3 \sin 2 \pi \tau , \; 0.1 \sin 2 \pi \tau , \;
+                 0.5 + 0.05 \cos 2 \pi \tau \big)
+```
+
+at magnetic moment ``\mu = 10^{-2}``: unlike the tokamak loop it varies in all four components,
+including the parallel velocity.
+
+The dynamics is integrated in its variational formulation, with the Gauss-Legendre variational
+partitioned Runge-Kutta methods and each of the projections onto the constraint submanifold. This is
+the geometry the pre-0.2 gallery ran with the projected methods only, which is why it has no
+Gauss-Legendre Runge-Kutta page.
+
+Each method is run over the same time interval at four time steps, ``\Delta t \in \{10, 5, 2, 1\}``,
+whose relative errors are drawn as four curves in one figure. This equilibrium is by far the more
+benign of the two: the projected methods hold the invariant at round-off, ``10^{-14}``, at every one
+of the four time steps, and it is the unprojected method whose drift the four curves order — 9·10⁻⁷
+at ``\Delta t = 10`` down to 9·10⁻¹¹ at ``\Delta t = 1``. The time interval and the number of sample
+points are reduced from the published ones, for the reasons given at the top of
+`src/guiding-center-4d-poincare.jl`.
+
+```julia
+run_poincare(:symmetric, iodeproblem, "Guiding Center 4d Symmetric Field", tableaus_vprk_gauss())
+```

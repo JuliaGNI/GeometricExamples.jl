@@ -1,0 +1,29 @@
+# Guiding Center 4d (Tokamak): 1st Poincaré Integral Invariant with Gauss-Legendre VPRK Methods and Projections
+
+The first Poincaré integral invariant
+
+```math
+I_{1} = \oint_{\gamma} \vartheta_{i} (q) \, dq^{i}
+```
+
+of the four-dimensional guiding centre dynamics, on the same loop as the
+[Gauss-Legendre Runge-Kutta page](guiding-center-4d-poincare-1st-tokamak-firk-gauss.md): a circle of
+radius ``0.1`` in the poloidal plane of the medium-size axisymmetric tokamak about ``(R, Z) = (1.75,
+0)``, at ``u = 0.5`` and ``\mu = 10^{-3}``.
+
+Here the dynamics is integrated in its variational formulation, with the Gauss-Legendre variational
+partitioned Runge-Kutta methods and each of the projections onto the constraint submanifold —
+comparing the methods that preserve the structure of the dynamics with those that do not is the
+point of these pages. The internal stage projection has no integrator in
+GeometricIntegrators 0.16 and its runs fail here, as they do on the trajectory pages.
+
+Each method is run over the same time interval at four time steps, ``\Delta t \in \{10, 5, 2, 1\}``,
+whose relative errors are drawn as four curves in one figure, as on the
+[Gauss-Legendre Runge-Kutta page](guiding-center-4d-poincare-1st-tokamak-firk-gauss.md). The
+projection is what separates the runs: over this interval the unprojected method loses 3·10⁻¹ of the
+invariant at ``\Delta t = 10`` and 3·10⁻³ at ``\Delta t = 1``, its symmetric projection 3·10⁻⁵ and
+5·10⁻¹¹.
+
+```julia
+run_poincare(:tokamak, iodeproblem, "Guiding Center 4d Tokamak", tableaus_vprk_gauss())
+```

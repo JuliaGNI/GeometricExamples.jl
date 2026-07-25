@@ -9,10 +9,11 @@ invariants from [PoincareInvariants.jl](https://github.com/JuliaGNI/PoincareInva
 figures are produced with [CairoMakie](https://docs.makie.org).
 
 Every page below runs one family of integration methods over one problem and collects, for each
-run, the trajectory, its time traces, and the errors of the conserved quantities. Runs that
-diverge are reported on their page together with the trajectory up to the point of failure — the
-comparison of methods that do and do not preserve the geometric structure is the point of these
-examples, so failures are shown rather than hidden.
+run, the trajectory, its time traces, and the errors of the conserved quantities. The Poincaré
+invariant pages replace those diagnostics with the error of the invariant itself and with the loop
+or surface whose advection defines it. Runs that diverge are reported on their page together with
+the trajectory up to the point of failure — the comparison of methods that do and do not preserve
+the geometric structure is the point of these examples, so failures are shown rather than hidden.
 
 
 ## Numerical Examples
@@ -98,6 +99,25 @@ alongside the energy error.
 * [Symmetric SRK3 VPRK Method](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-srk3.md)
 * [Radau IIA VPRK Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md)
 
+### Guiding Center 4d (1st Poincaré Invariant)
+
+The invariant ``I_{1} = \oint_{\gamma} \vartheta_{i} (q) \, dq^{i}`` of the guiding centre one-form,
+computed on an advected loop of a few hundred ensemble members. Each run integrates the loop at four
+time steps over the same interval, whose relative errors share one figure.
+
+* [Tokamak, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-firk-gauss.md)
+* [Tokamak, Gauss-Legendre VPRK Methods](guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-vprk-gauss.md)
+* [Symmetric Field, Gauss-Legendre VPRK Methods](guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-symmetric-vprk-gauss.md)
+
+### Guiding Center 4d (2nd Poincaré Invariant)
+
+The invariant ``I_{2} = \int_{S} \omega_{ij} (q) \, dq^{i} \wedge dq^{j}`` of the guiding centre
+two-form, on an advected surface sampled at Padua points.
+
+* [Tokamak, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-tokamak-firk-gauss.md)
+* [Tokamak, Gauss-Legendre VPRK Methods](guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-tokamak-vprk-gauss.md)
+* [Symmetric Field, Gauss-Legendre VPRK Methods](guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-symmetric-vprk-gauss.md)
+
 ### Standard Map
 
 * [1st Poincaré Integral Invariant](standard-map/standard-map-poincare-1st.md)
@@ -110,19 +130,25 @@ This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to Geometric
 GeometricProblems 0.7 / PoincareInvariants 0.5 / CairoMakie 0.15. A few things it used to cover
 have no counterpart in the current stack and are recorded here rather than quietly dropped.
 
-* **ChargedParticleDynamics is pinned to an unmerged branch.** The four guiding-centre orbits above
-  need interface changes — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 /
+* **ChargedParticleDynamics is pinned to an unmerged branch.** The guiding-centre orbits and
+  invariants above need interface changes — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 /
   GeometricSolutions 0.6, the PoincareInvariants 0.5 rewrite of the 4d loop and surface invariants,
   and the `ChargedParticlePlots` Makie extension — that live on
   [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl)'s
   `finish-guiding-center-3d-upgrade` branch. Its released version, 0.1.0, is two ecosystem
   generations behind, so `Project.toml` pins the branch by revision until a version carrying those
   changes is registered.
-* **The guiding-centre Poincaré integral invariants and the 3d charged particle** are not yet
-  rebuilt. The pre-0.2 scripts for both are kept under `examples/`; `examples/README.md` records
-  what reviving them involves. The invariants now have everything they need on the CPD branch
-  (`guiding_center_4d_poincare_invariant_1st`/`_2nd` and the ensemble builders), so they are the
-  natural next step; the 3d charged-particle scripts were already broken before the modernization.
+* **The 3d charged particle** is not rebuilt. Its pre-0.2 scripts are kept under `examples/`, and
+  `examples/README.md` records what reviving them involves; they were already broken before the
+  modernization, as they include settings and driver files that do not exist in their directory.
+* **Two of the three error curves of the published Poincaré invariant figures.** Each pre-0.2 run
+  drew the invariant of the one-form on ``q``, the canonical ``\oint_\gamma p_i \, dq^i`` of the
+  variational solution, and a Lagrange-multiplier-corrected form. PoincareInvariants 0.5 computes
+  one invariant from the form it is handed, and the solution of a projected run no longer carries
+  the ``\lambda`` series, so only the first of the three survives. The ``O(\Delta t^2)``-corrected
+  variant `plot_poincare_invariant_error(t, I, K, Δt)` of the `ChargedParticlePlots` extension is
+  unused for the same reason: the trapezoidal second-invariant variants that produced its `K` were
+  removed in the PoincareInvariants 0.5 rewrite.
 * **Formal Lagrangian Runge-Kutta methods.** `IntegratorFLRK` is commented out in
   GeometricIntegrators 0.16, so the point-vortex runs on `lodeproblem_formal_lagrangian` have no
   counterpart. The method list in `src/tableau_lists.jl` records this.
@@ -140,11 +166,20 @@ have no counterpart in the current stack and are recorded here rather than quiet
 * **Continuous Galerkin variational integrators.** `IntegratorCGVI` maps to
   `CGVI(basis, quadrature)`, but the code path that ran it was never called by any script in the
   pre-0.2 gallery and is not carried over.
-* **Run lengths.** The massless charged particle used to be integrated over 10⁶ time steps and the
-  standard-map invariants sampled with 10⁵ loop points and a 500×500 surface grid. Those counts
-  are out of reach for an automated build that runs the whole projection matrix on every page; the
-  reduced values are documented at the top of `src/massless-charged-particle.jl` and
-  `src/standard-map.jl`, together with why they do not change the conclusions.
+* **Run lengths.** The massless charged particle used to be integrated over 10⁶ time steps, the
+  standard-map invariants sampled with 10⁵ loop points and a 500×500 surface grid, and the
+  guiding-centre invariants advected over 5·10⁴ time units with up to 2000 loop points or a
+  200×200 surface grid. Those counts are out of reach for an automated build that runs the whole
+  projection matrix on every page — for the guiding centre every sample point is one ensemble
+  member with its own implicit integrator, and each run is repeated at four time steps. The reduced
+  values are documented at the top of `src/massless-charged-particle.jl`, `src/standard-map.jl` and
+  `src/guiding-center-4d-poincare.jl`, together with the measurements showing that they do not
+  change the conclusions: the guiding-centre invariants are unchanged to ten digits between 100 and
+  800 sample points, while the drift they measure spans six orders of magnitude between methods.
+* **One page per time step.** The pre-0.2 gallery published the guiding-centre invariants as four
+  pages per method family, one for each of Δt ∈ {10, 5, 2, 1}. The four runs are now overlaid in
+  one figure per method instead, which is the same computation and puts the comparison the four
+  pages were making on a single pair of axes.
 * **A fixed tableau list bug.** The pre-0.2 `get_tableau_list_vprk_projection` attached the run
   IDs `vprk_lobIIIF*` and `vprk_lobIIIG*` to `getTableauVPLobIIIE*` tableaus, so six of the
   published run IDs showed the Lobatto IIIE results. The projection matrix is now generated rather

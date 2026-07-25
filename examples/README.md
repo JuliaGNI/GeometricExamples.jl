@@ -11,7 +11,7 @@ Migration status, family by family:
 |---|---|
 | `lotka_volterra_2d/`, `massless_charged_particle/`, `point_vortices/`, `standard_map/` | migrated to `src/` + `weave/` |
 | `guiding_center_4d/` trajectory runs | migrated — see below |
-| `guiding_center_4d/` Poincaré invariants | not yet, everything needed is in place |
+| `guiding_center_4d/` Poincaré invariants | migrated — see below |
 | `charged_particles_3d/` | not migrated, and broken before the migration too |
 
 ## guiding_center_4d — trajectory pages: **migrated**
@@ -45,17 +45,41 @@ How the pieces map:
 `ChargedParticleDynamics` is pinned to its `finish-guiding-center-3d-upgrade` branch by revision in
 `Project.toml`; that branch carries the interface changes and is not yet merged or released.
 
-## guiding_center_4d — Poincaré invariants: **not yet migrated**
+## guiding_center_4d — Poincaré invariants: **migrated**
 
-`guiding_center_4d_poincare_invariant_{1st,2nd}.jl` and the `poincare_invariant_{1st,2nd}/` trees
-are built on the removed `PoincareInvariant1st(equ, loop, …)` / `evaluate_poincare_invariant` /
-`write_to_hdf5` API. Everything needed to rebuild them is now on the CPD branch:
-`guiding_center_4d_poincare_invariant_1st(N)` and `..._2nd(N)` return a noncanonical `FirstPI` or
-`SecondPI` built from the guiding-centre one- and two-form, and
-`guiding_center_4d_loop_ensemble(prob, pinv)` samples the parameterisation into an
-`EnsembleProblem`. `src/standard-map.jl` is the worked example of the same pattern. The HDF5 output
-disappears; the figures come from `plot_poincare_invariant_error`, `plot_poincare_loop` and
-`plot_poincare_surface` in CPD's Makie extension, which draw in cartesian 3-space.
+`guiding_center_4d_poincare_invariant_{1st,2nd}.jl` and the `poincare_invariant_{1st,2nd}/` trees are
+now `src/guiding-center-4d-poincare.jl` plus one thin module per invariant, and the six pages
+`weave/guiding-center-4d-poincare-{1st,2nd}-<geometry>-<family>.jmd`. The scripts here are kept for
+reference against the published figures.
+
+How the pieces map:
+
+| pre-0.2 | v0.2 |
+|---|---|
+| `PoincareInvariant1st(init, f_loop, ϑ, Δt, 4, nloop, ntime, nsave)` | `guiding_center_4d_poincare_invariant_1st(N)`, then `guiding_center_4d_loop_ensemble(prob, pinv)`, `integrate` and `compute!(pinv, sol, parameters(prob))` |
+| `PoincareInvariant2nd(…, ω, …, nx, ny, …)` | `guiding_center_4d_poincare_invariant_2nd(N)`, whose default Chebyshev plan samples the surface at Padua points, and `guiding_center_4d_surface_ensemble` |
+| `TokamakFastLoop` / `TokamakFastSurface` | `GuidingCenter4d.TokamakMediumCylindrical` — same equilibrium, same loop, surface and `μ = 10⁻³` |
+| `SymmetricLoop` / `SymmetricSurface` | `GuidingCenter4d.SymmetricField` — same parameterisations, `μ = 10⁻²` |
+| four `*_dt{1,2,5,10}.jl` scripts per page | the `TIMESTEPS` sweep, overlaid in one figure per method |
+| `_poincare_1st_q` / `_poincare_2nd_q` | `_invariant`, one curve per time step |
+| `_loop`, `_trajectories`, `_area` | `_loop`, `_trajectories`, `_surface` |
+| `Simulation`/`run!` + `write_to_hdf5` | `integrate` on the `EnsembleProblem`; no solution files are written |
+
+* **The two equilibria cannot be `using`ed together.** Every guiding-centre submodule exports the
+  same names, one method each, closing over its own loop and surface, so the driver reaches both
+  through a `GEOMETRIES` table and qualifies every call. This is why the geometry is a page-level
+  argument rather than a second set of thin modules.
+* `SymmetricSurface` used to hand the four Hessians `D²ϑ₁`–`D²ϑ₄` of the one-form to
+  `PoincareInvariant2nd` and offered trapezoidal variants alongside. Both the variants and the
+  Hessians are gone from CPD with the 0.5 rewrite; neither was ever called from here.
+* `guiding_center_4d_symmetric_poincare_invariant_1st.jl` in this directory is a stub that cannot
+  have produced a figure: it defines none of `Δt`, `ntime`, `nloop`, `pinv` or `tableau_list` that
+  the driver it includes reads, and imports two names (`plot_loop`, `plot_trajectories`) that never
+  existed. The eight `poincare_invariant_2nd/*_fast_*.jl` scripts are likewise broken as committed —
+  their `include("guiding_center_4d_settings_*.jl")` is missing the `../` that the sibling scripts
+  have. Nothing is lost by not reproducing either.
+* **What did not come back:** the `_poincare_*_p` and `_poincare_*_l` curves, and the run lengths.
+  See the *Known Gaps* section of the documentation (`docs/src/index.md`) for both.
 
 ## charged_particles_3d: **not migrated, and broken independently**
 

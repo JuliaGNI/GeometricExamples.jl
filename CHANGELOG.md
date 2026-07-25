@@ -30,7 +30,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with `periodic = false`: the toroidal angle is periodic and wrapping it tears the trajectory
   figures apart.
 
+- **The guiding-centre Poincaré integral invariants are back**, the last family the modernization
+  had left behind. `src/guiding-center-4d-poincare.jl` plus one thin module per invariant replace
+  `examples/guiding_center_4d/guiding_center_4d_poincare_invariant_{1st,2nd}.jl` and the twenty-four
+  `poincare_invariant_{1st,2nd}/*_dt*.jl` run scripts, which were written against the
+  `PoincareInvariant1st(equ, loop, …)` / `evaluate_poincare_invariant` / `write_to_hdf5` API removed
+  in `PoincareInvariants` 0.4. Six pages, the six the pre-0.2 gallery published: both invariants on
+  the medium tokamak with the Gauss-Legendre Runge-Kutta and the projected Gauss-Legendre VPRK
+  methods, and on the symmetric quadratic field with the projected VPRK methods only. That takes the
+  gallery from 52 to 58 pages.
+
+  The invariants are *noncanonical*, built from the guiding-centre one-form `ϑ = A + u b` and
+  `ω = dϑ` rather than from a canonical pairing, so `compute!` and
+  `PoincareInvariants.plot_invariant` are passed the problem's parameters. `plot_invariant` has to be
+  qualified: `ChargedParticleDynamics` exports one of its own and these pages need both packages.
+
+  Two things differ from the trajectory family. The equilibrium is a page-level argument rather than
+  a thin module per geometry, because every guiding-centre submodule of CPD exports the *same* names
+  — one method each, closing over its own loop, surface and magnetic moment — so the two cannot be
+  `using`ed together and the driver reaches them through a `GEOMETRIES` table. And the four time
+  steps `Δt ∈ {10, 5, 2, 1}` that the pre-0.2 gallery gave a page each are overlaid as four curves in
+  one figure per method: the same computation, with the comparison those four pages were making on a
+  single pair of axes.
+
+  Run lengths and sample counts are reduced — 10³ time units instead of 5·10⁴, 200 loop points and
+  231 Padua points instead of up to 2000 and 200×200 — because every sample point is one ensemble
+  member with its own implicit integrator and each run is repeated four times over. Measured over the
+  reduced interval, the first invariant of the tokamak loop is identical to ten digits at 100, 200,
+  400 and 800 sample points, while the drift it measures spans six orders of magnitude between the
+  methods: `VPRKGauss(2)` loses 3E-1 of it at `Δt = 10` and 3E-3 at `Δt = 1`, its symmetric
+  projection 3E-5 and 5E-11. What limits these runs is the integrator, not the quadrature on the
+  advected loop or surface.
+
+  The figures come from CPD's Makie extension, which draws in cartesian 3-space, and so need the same
+  kind of adapters as the trajectory pages: `_cartesian_slices` gathers one coordinate vector per
+  saved time out of the `EnsembleSolution` for the advected loop or surface, `_cartesian_orbits` the
+  same data per member for the bundle of orbits. Unlike `src/standard-map.jl`, the second invariant
+  needs no second grid object — `plot_poincare_surface` scatters its points instead of reshaping
+  them, so the accurate Chebyshev invariant serves both the number and the figure.
+
 ### Changed
+
+- **`_write_page` moved from `src/standard-map.jl` into `src/common.jl`.** It writes a page as a flat
+  list of figures, which is what both the standard map's and the guiding centre's invariant pages
+  need; `write_plots`, with its fixed trajectory section skeleton, is not applicable to either.
 
 - **`ChargedParticleDynamics` is a dependency again**, pinned by revision to its
   `finish-guiding-center-3d-upgrade` branch. That branch carries the interface changes the examples
@@ -42,11 +85,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known limitations
 
-The guiding-centre **Poincaré integral invariants** are not rebuilt yet, though everything they need
-is now available: the CPD branch provides `guiding_center_4d_poincare_invariant_1st(N)`/`..._2nd(N)`
-and the ensemble builders, and `src/standard-map.jl` is the worked example of the same pattern. The
-3d charged particle remains unmigrated and was already broken before the modernization. See
-`examples/README.md`.
+The **3d charged particle** remains unmigrated and was already broken before the modernization. Of the
+three error curves each published Poincaré invariant run drew, only the invariant of the one-form
+survives: `PoincareInvariants` 0.5 computes one invariant from the form it is handed, and a projected
+solution no longer carries the `λ` series the third one needed. See `examples/README.md` and the
+*Known Gaps* section of the documentation.
 
 
 ## [0.2.0] - 2026-07-25

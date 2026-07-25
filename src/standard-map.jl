@@ -7,7 +7,7 @@ module StandardMapExamples
     using Markdown
 
     import GeometricExamples
-    using GeometricExamples: PLOT_DIR, _linebreak, _save_plot, _plot_figure_md
+    using GeometricExamples: PLOT_DIR, _linebreak, _save_plot, _write_page
 
 
     @doc raw"""
@@ -169,27 +169,6 @@ module StandardMapExamples
     # The curve parameterisation for the first invariant, the surface one for the second.
     _parameterisation(::FirstPoincareInvariant) = loop
     _parameterisation(::SecondPoincareInvariant) = surface
-
-
-    function _write_page(dir, file, name, fig_suff, suffixes)
-        omitted = String[]
-
-        open(file * ".md", "w") do f
-            show(f, "text/markdown", Markdown.parse("# $name"))
-            _linebreak(f)
-
-            for suffix in suffixes
-                _plot_figure_md(f, name, "$(dir)/$(file)$(suffix)$(fig_suff)") ||
-                    push!(omitted, suffix)
-            end
-        end
-
-        isempty(omitted) ||
-            @warn("Omitted $(length(omitted)) figures from $(file).md that were not produced: " *
-                  join(omitted, ", "))
-
-        nothing
-    end
 
 
     export run_poincare_1st, run_poincare_2nd

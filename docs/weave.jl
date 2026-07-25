@@ -28,6 +28,8 @@ const PROBLEMS = (
     "guiding-center-4d-barely-trapped" => :GuidingCenter4dBarelyTrappedExamples,
     "guiding-center-4d-deeply-passing" => :GuidingCenter4dDeeplyPassingExamples,
     "guiding-center-4d-deeply-trapped" => :GuidingCenter4dDeeplyTrappedExamples,
+    "guiding-center-4d-poincare-1st"   => :GuidingCenter4dPoincare1stExamples,
+    "guiding-center-4d-poincare-2nd"   => :GuidingCenter4dPoincare2ndExamples,
     "standard-map"                     => :StandardMapExamples,
 )
 
@@ -46,6 +48,15 @@ const TRAJECTORY_PAGES = ("erk", "firk-gauss", "firk-lobatto",
 # orbits; both are one line here if wanted.
 const GUIDING_CENTER_PAGES = ("firk-gauss", "firk-lobatto", "vprk-gauss", "vprk-srk3", "vprk-radau")
 
+# The Poincaré invariant pages carry the geometry in the page name, because it selects the
+# equilibrium submodule of `ChargedParticleDynamics`. Their page set is the one the pre-0.2 gallery
+# published: the medium tokamak with the implicit Runge-Kutta and the projected VPRK methods, and
+# the symmetric quadratic field with the projected VPRK methods only. Each run integrates an
+# ensemble of a few hundred members four times over, once per time step of the sweep, so the two
+# `vprk-gauss` pages are the most expensive in the gallery — the Lobatto and Radau families are one
+# line here if wanted.
+const POINCARE_PAGES = ("tokamak-firk-gauss", "tokamak-vprk-gauss", "symmetric-vprk-gauss")
+
 const PAGES = Dict(
     "lotka-volterra-2d"                => TRAJECTORY_PAGES,
     "lotka-volterra-2d-singular"       => filter(startswith("vprk"), TRAJECTORY_PAGES),
@@ -55,6 +66,8 @@ const PAGES = Dict(
     "guiding-center-4d-barely-trapped" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-deeply-passing" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-deeply-trapped" => GUIDING_CENTER_PAGES,
+    "guiding-center-4d-poincare-1st"   => POINCARE_PAGES,
+    "guiding-center-4d-poincare-2nd"   => POINCARE_PAGES,
     "standard-map"                     => ("poincare-1st", "poincare-2nd"),
 )
 

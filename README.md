@@ -15,8 +15,10 @@ failure: comparing methods that do and do not preserve the geometric structure i
 these examples, so failures are shown rather than hidden.
 
 Problems covered: the two-dimensional Lotka-Volterra model in its standard and its singular gauge,
-the massless charged particle in 2d, the planar point vortices (including a convergence study), and
-the Chirikov standard map (first and second Poincaré integral invariant).
+the massless charged particle in 2d, the planar point vortices (including a convergence study), four
+orbits of the four-dimensional guiding centre dynamics in a tokamak equilibrium and its first and
+second Poincaré integral invariants, and the Chirikov standard map (first and second Poincaré
+integral invariant).
 
 ## Reproducing the Figures
 
@@ -50,11 +52,13 @@ drivers, the crash reporting and the CairoMakie stack — in a temporary directo
 
 ## Status
 
-The guiding-centre and charged-particle examples under `examples/` are not part of the build: they
-depend on [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl),
-whose released version still targets the previous generation of the ecosystem. See
-[`examples/README.md`](examples/README.md) for what reviving them will involve, and the *Known
-Gaps* section of the documentation for everything else the modernization to
+The pre-0.2 scripts under `examples/` are not part of the build; they are kept for reference against
+the published figures. Everything there has been migrated except the 3d charged particle, which was
+already broken before the modernization. The guiding-centre examples that were migrated need
+[ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) pinned to an
+unmerged branch, as its released version still targets the previous generation of the ecosystem. See
+[`examples/README.md`](examples/README.md) for how the old scripts map onto the new ones, and the
+*Known Gaps* section of the documentation for everything the modernization to
 GeometricIntegrators 0.16 left behind.
 
 ## References

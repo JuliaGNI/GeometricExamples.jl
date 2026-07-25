@@ -89,6 +89,18 @@ makedocs(;
             "Radau IIA VPRK Methods"              => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md",
         ],
 
+        "Guiding Center 4d (1st Poincaré Invariant)" => [
+            "Tokamak, Gauss-Legendre Runge-Kutta Methods" => "guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-firk-gauss.md",
+            "Tokamak, Gauss-Legendre VPRK Methods"        => "guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-vprk-gauss.md",
+            "Symmetric Field, Gauss-Legendre VPRK Methods" => "guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-symmetric-vprk-gauss.md",
+        ],
+
+        "Guiding Center 4d (2nd Poincaré Invariant)" => [
+            "Tokamak, Gauss-Legendre Runge-Kutta Methods" => "guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-tokamak-firk-gauss.md",
+            "Tokamak, Gauss-Legendre VPRK Methods"        => "guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-tokamak-vprk-gauss.md",
+            "Symmetric Field, Gauss-Legendre VPRK Methods" => "guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-symmetric-vprk-gauss.md",
+        ],
+
         "Standard Map" => [
             "1st Poincaré Integral Invariant"     => "standard-map/standard-map-poincare-1st.md",
             "2nd Poincaré Integral Invariant"     => "standard-map/standard-map-poincare-2nd.md",

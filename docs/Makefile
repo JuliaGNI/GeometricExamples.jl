@@ -1,7 +1,8 @@
 
 # The page matrix of .github/workflows/Documentation.yaml. `PAGES_<problem>` mirrors the `PAGES`
 # dictionary of weave.jl: the singular Lotka-Volterra gauge only differs in its variational
-# formulation, so it has no explicit pages, and the standard map carries the Poincaré invariants.
+# formulation, so it has no explicit pages, and the standard map and the guiding-centre invariant
+# problems carry the Poincaré invariants.
 TRAJECTORY_PAGES = erk \
                    firk-gauss \
                    firk-lobatto \
@@ -17,6 +18,10 @@ GUIDING_CENTER_PAGES = firk-gauss \
                        vprk-srk3 \
                        vprk-radau
 
+POINCARE_PAGES = tokamak-firk-gauss \
+                 tokamak-vprk-gauss \
+                 symmetric-vprk-gauss
+
 PROBLEMS = lotka-volterra-2d \
            lotka-volterra-2d-singular \
            massless-charged-particle \
@@ -25,6 +30,8 @@ PROBLEMS = lotka-volterra-2d \
            guiding-center-4d-barely-trapped \
            guiding-center-4d-deeply-passing \
            guiding-center-4d-deeply-trapped \
+           guiding-center-4d-poincare-1st \
+           guiding-center-4d-poincare-2nd \
            standard-map
 
 PAGES_lotka-volterra-2d          = $(TRAJECTORY_PAGES)
@@ -35,6 +42,8 @@ PAGES_guiding-center-4d-barely-passing = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-barely-trapped = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-deeply-passing = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-deeply-trapped = $(GUIDING_CENTER_PAGES)
+PAGES_guiding-center-4d-poincare-1st   = $(POINCARE_PAGES)
+PAGES_guiding-center-4d-poincare-2nd   = $(POINCARE_PAGES)
 PAGES_standard-map               = poincare-1st poincare-2nd
 
 # One target per woven page: `make -j8 weave` reproduces the fan-out of the CI matrix and `make -k`
