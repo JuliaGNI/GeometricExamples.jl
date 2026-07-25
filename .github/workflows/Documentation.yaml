@@ -1,0 +1,146 @@
+name: Documentation
+
+# Building the documentation runs every method of every family over the full time interval, so it
+# is far too expensive for feature branches: `deploydocs` publishes from `master` and tags only.
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  workflow_dispatch:
+
+# Superseded runs on the same ref are pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Widened to `write` on the deploying job only.
+permissions:
+  contents: read
+
+jobs:
+  # One job per woven page: each page integrates a whole method family — up to 126 runs for the
+  # Lobatto VPRK pages, which cross seven families and three stage counts with six projections —
+  # over the full time interval, which is far too much work to run sequentially in a single job.
+  # The matrix mirrors `PAGES` in docs/weave.jl and `PAGES_<problem>` in docs/Makefile: the
+  # singular Lotka-Volterra gauge has no explicit pages (its `odeproblem` is the standard one's),
+  # the point vortices add a convergence study, and the standard map carries the Poincaré integral
+  # invariants instead of the trajectory diagnostics.
+  weave:
+    name: Weave ${{ matrix.problem }} ${{ matrix.page }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      # A crashing integrator must not prevent the remaining pages from being built.
+      fail-fast: false
+      matrix:
+        include:
+          - { problem: lotka-volterra-2d,          page: erk }
+          - { problem: lotka-volterra-2d,          page: firk-gauss }
+          - { problem: lotka-volterra-2d,          page: firk-lobatto }
+          - { problem: lotka-volterra-2d,          page: vprk-gauss }
+          - { problem: lotka-volterra-2d,          page: vprk-srk3 }
+          - { problem: lotka-volterra-2d,          page: vprk-lobatto }
+          - { problem: lotka-volterra-2d,          page: vprk-lobatto-symplectic }
+          - { problem: lotka-volterra-2d,          page: vprk-radau }
+          - { problem: lotka-volterra-2d-singular, page: vprk-gauss }
+          - { problem: lotka-volterra-2d-singular, page: vprk-srk3 }
+          - { problem: lotka-volterra-2d-singular, page: vprk-lobatto }
+          - { problem: lotka-volterra-2d-singular, page: vprk-lobatto-symplectic }
+          - { problem: lotka-volterra-2d-singular, page: vprk-radau }
+          - { problem: massless-charged-particle,   page: erk }
+          - { problem: massless-charged-particle,   page: firk-gauss }
+          - { problem: massless-charged-particle,   page: firk-lobatto }
+          - { problem: massless-charged-particle,   page: vprk-gauss }
+          - { problem: massless-charged-particle,   page: vprk-srk3 }
+          - { problem: massless-charged-particle,   page: vprk-lobatto }
+          - { problem: massless-charged-particle,   page: vprk-lobatto-symplectic }
+          - { problem: massless-charged-particle,   page: vprk-radau }
+          - { problem: point-vortices,              page: erk }
+          - { problem: point-vortices,              page: firk-gauss }
+          - { problem: point-vortices,              page: firk-lobatto }
+          - { problem: point-vortices,              page: vprk-gauss }
+          - { problem: point-vortices,              page: vprk-srk3 }
+          - { problem: point-vortices,              page: vprk-lobatto }
+          - { problem: point-vortices,              page: vprk-lobatto-symplectic }
+          - { problem: point-vortices,              page: vprk-radau }
+          - { problem: point-vortices,              page: convergence }
+          - { problem: standard-map,                page: poincare-1st }
+          - { problem: standard-map,                page: poincare-2nd }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      # All jobs of this workflow share one depot cache: the default cache name includes the job
+      # name and the matrix values, which would give us one near-identical cache per matrix cell
+      # and a cold cache in the `documenter` job.
+      - uses: julia-actions/cache@v2
+        with:
+          cache-name: julia-cache;workflow=${{ github.workflow }}
+          include-matrix: false
+      - name: Install dependencies
+        run: julia --project --color=yes -e 'using Pkg; Pkg.instantiate(); Pkg.precompile();'
+      - name: Weave page
+        run: julia --project=.. --color=yes weave.jl ${{ matrix.problem }} ${{ matrix.page }}
+        working-directory: docs
+      # Stage the output below a common root, so that the artifacts of all pages merge back into
+      # `docs/src/<problem>/` in the `documenter` job.
+      - name: Stage generated page
+        run: |
+          mkdir -p staging/${{ matrix.problem }}
+          cp -R docs/src/${{ matrix.problem }}/. staging/${{ matrix.problem }}/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pages-${{ matrix.problem }}-${{ matrix.page }}
+          path: staging
+          retention-days: 1
+
+  # Collect the woven pages and figures of all problems, then build and deploy the docs.
+  documenter:
+    name: Documenter
+    needs: weave
+    # Build even when some pages failed, so that there is a build log and a site to look at; the
+    # deployment itself is gated on a complete run below. `!cancelled()` still respects
+    # cancellation through the `concurrency` group.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - uses: julia-actions/cache@v2
+        with:
+          cache-name: julia-cache;workflow=${{ github.workflow }}
+      - name: Install dependencies
+        run: julia --project --color=yes -e 'using Pkg; Pkg.instantiate(); Pkg.precompile();'
+      - name: Collect woven pages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pages-*
+          merge-multiple: true
+          path: docs/src
+      - name: Documentation
+        run: julia --project=.. --color=yes make.jl
+        working-directory: docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          # Publish a complete site only: `needs.weave.result` is `success` exactly when every
+          # matrix job succeeded. A partial deployment would silently drop pages from the
+          # published documentation.
+          DEPLOY_DOCS: ${{ needs.weave.result == 'success' }}
+      # Nothing was deployed in that case, so keep the site around for inspection.
+      - name: Upload site of the incomplete build
+        if: ${{ always() && needs.weave.result != 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: documenter-site
+          path: docs/build
+          retention-days: 7
+          if-no-files-found: ignore

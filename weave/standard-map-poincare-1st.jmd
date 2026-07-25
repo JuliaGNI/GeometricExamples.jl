@@ -1,0 +1,19 @@
+# Standard Map: 1st Poincaré Integral Invariant
+
+The first Poincaré integral invariant
+
+```math
+I_{1} = \oint_{\gamma} p \, d\theta
+```
+
+of the Chirikov standard map, for four values of the stochasticity parameter `K`. `K ≈ 0.971635`
+is the critical value at which the last invariant torus breaks up.
+
+The map is symplectic, so `I₁` is conserved exactly; what the figures show is how well the loop
+integral can still be evaluated numerically as the flow folds the loop. In the regular regime it
+is conserved to machine precision, and in the chaotic regime the quadrature loses resolution
+exponentially.
+
+```julia
+run_poincare_1st()
+```

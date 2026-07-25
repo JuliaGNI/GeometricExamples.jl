@@ -1,0 +1,16 @@
+# Point Vortices: Convergence of the Gauss-Legendre VPRK Methods
+
+Each method is integrated over the same time interval with time steps `Δt / 2ⁱ`, `i = 0, …, 7`,
+plus two further halvings that serve as the reference solution. Plotted are the error of the final
+state against that reference, the order observed from successive halvings, and the span of the
+relative energy and angular-momentum error over each run.
+
+The dashed reference line of the expected order is drawn only where the method reports an integer
+order: it is `missing` for the projected methods, and for a partitioned method it is the minimum
+over both halves of the tableau rather than the order the method attains here. The measured order
+is the one to read.
+
+```julia
+run_convergence(iodeproblem(timestep = Δt_convergence, timespan = (0.0, Δt_convergence * nt_convergence)),
+                "Point Vortices", tableaus_vprk_gauss())
+```

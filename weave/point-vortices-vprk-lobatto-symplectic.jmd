@@ -1,0 +1,5 @@
+# Point Vortices with Symplectic Lobatto VPRK Pairs and Projections
+
+```julia
+run_list(iodeproblem(timestep = Δt, timespan = (0.0, Δt * nt)), "Point Vortices", tableaus_vprk_lobatto_symplectic())
+```

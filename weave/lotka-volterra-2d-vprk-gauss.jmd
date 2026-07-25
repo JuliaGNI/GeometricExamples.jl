@@ -1,0 +1,5 @@
+# Lotka-Volterra 2d with Gauss-Legendre VPRK Methods and Projections
+
+```julia
+run_list(iodeproblem(timestep = Δt, timespan = (0.0, Δt * nt)), "Lotka-Volterra 2d", tableaus_vprk_gauss())
+```

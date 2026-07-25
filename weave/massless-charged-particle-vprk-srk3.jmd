@@ -1,0 +1,5 @@
+# Massless Charged Particle with Symmetric SRK3 VPRK Method and Projections
+
+```julia
+run_list(iodeproblem(timestep = Δt, timespan = (0.0, Δt * nt)), "Massless Charged Particle", tableaus_vprk_srk3())
+```
