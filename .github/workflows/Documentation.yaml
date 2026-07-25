@@ -32,7 +32,16 @@ jobs:
   weave:
     name: Weave ${{ matrix.problem }} ${{ matrix.page }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # The guiding-centre Poincaré invariant pages are the slowest in the gallery: each of their runs
+    # advects an ensemble of a few hundred members four times over, once per time step of the sweep,
+    # so a `vprk-gauss` page is ~3E7 member-steps of an implicit integrator. Measured on these
+    # runners: 19-20 min for the six-method `firk-gauss` pages, 46-49 min for the symmetric field's
+    # 36-method `vprk-gauss` pages, and over 120 min for the tokamak's, which are stiffer — those
+    # two were killed by the previous 120 minute limit. The tolerances are not at fault: the
+    # residual floor of this equilibrium is 2E-16, the solver converges in two Newton iterations and
+    # never reaches its iteration cap (see ChargedParticleDynamics' scripts/study_solver_tolerances.jl
+    # for the equilibria where that *is* the problem).
+    timeout-minutes: 240
     strategy:
       # A crashing integrator must not prevent the remaining pages from being built.
       fail-fast: false
