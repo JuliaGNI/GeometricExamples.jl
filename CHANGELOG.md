@@ -71,24 +71,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **The Julia floor is 1.11**, and CI tests `1.11` instead of `lts`. `[sources]` entries are a Pkg
-  1.11 feature: on 1.10 the ChargedParticleDynamics pin is silently ignored, the registered 0.1.0 is
-  resolved instead, and its `GeometricProblems = "0.6"` bound cannot be satisfied against the 0.7.3
-  required here — the `lts` jobs failed at resolution before running a single test. Lower the floor
-  and restore `lts` together with the removal of `[sources]`, once a CPD version carrying the
-  upgrade is registered.
+- **The weave job's `timeout-minutes` is 240**, up from 120, which killed the two tokamak
+  `vprk-gauss` invariant pages. Measured on the CI runners: 19-20 min for the six-method
+  `firk-gauss` pages, 46-49 min for the symmetric field's 36-method `vprk-gauss` pages, and over
+  120 min for the tokamak's, which are stiffer. Not a solver-configuration problem, though it looks
+  like one: this equilibrium's residual floor is `‖ϑ‖·eps = 2.2E-16`, well below the `f_abstol` the
+  gallery asks for, the solver converges in two Newton iterations and none of 4000 solves reached
+  its iteration cap. See ChargedParticleDynamics' `scripts/study_solver_tolerances.jl` for the
+  ITER-scale equilibria where too tight an `f_abstol` genuinely is the problem.
 
 - **`_write_page` moved from `src/standard-map.jl` into `src/common.jl`.** It writes a page as a flat
   list of figures, which is what both the standard map's and the guiding centre's invariant pages
   need; `write_plots`, with its fixed trajectory section skeleton, is not applicable to either.
 
-- **`ChargedParticleDynamics` is a dependency again**, pinned by revision to its
-  `finish-guiding-center-3d-upgrade` branch. That branch carries the interface changes the examples
-  need — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 / GeometricSolutions 0.6,
-  the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface invariants, and the
-  `ChargedParticlePlots` Makie extension — and is neither merged nor released; the released 0.1.0 is
-  two ecosystem generations behind. Replace the `[sources]` entry with a plain `compat` bound once a
-  version carrying those changes is registered.
+- **`ChargedParticleDynamics` is a dependency again**, at `compat = "0.2"`. 0.2.0 carries the
+  interface changes the examples need — the update to GeometricEquations 0.21 /
+  GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface
+  invariants, and the `ChargedParticlePlots` Makie extension.
+
+  For most of this release cycle it was a `[sources]` pin on the branch carrying those changes,
+  which had two consequences now undone. It forced a **Julia 1.11 floor**, since `[sources]` is a
+  Pkg 1.11 feature and 1.10 silently ignored the pin, resolved the registered 0.1.0 and failed on
+  its `GeometricProblems = "0.6"` bound; the floor is back to 1.10 and CI tests `lts` again. And it
+  broke the build outright when the branch was deleted on merge — a branch pin has no guarantee of
+  outliving the branch, which is worth remembering the next time one looks expedient.
 
 ### Known limitations
 

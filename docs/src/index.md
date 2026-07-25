@@ -130,16 +130,15 @@ This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to Geometric
 GeometricProblems 0.7 / PoincareInvariants 0.5 / CairoMakie 0.15. A few things it used to cover
 have no counterpart in the current stack and are recorded here rather than quietly dropped.
 
-* **ChargedParticleDynamics is pinned to an unmerged branch.** The guiding-centre orbits and
-  invariants above need interface changes — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 /
-  GeometricSolutions 0.6, the PoincareInvariants 0.5 rewrite of the 4d loop and surface invariants,
-  and the `ChargedParticlePlots` Makie extension — that live on
-  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl)'s
-  `finish-guiding-center-3d-upgrade` branch. Its released version, 0.1.0, is two ecosystem
-  generations behind, so `Project.toml` pins the branch by revision until a version carrying those
-  changes is registered. That pin is what sets the **Julia 1.11 floor**: `[sources]` entries are a
-  Pkg 1.11 feature, and 1.10 ignores the pin, resolves the registered 0.1.0 and fails on its
-  GeometricProblems 0.6 bound. Both the pin and the floor go together.
+* **The guiding-centre problems will need updating again.**
+  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) 0.2.0 —
+  which carries the interface changes the orbits and invariants above need, the update to
+  GeometricEquations 0.21 / GeometricSolutions 0.6, the PoincareInvariants 0.5 rewrite of the 4d
+  loop and surface invariants, and the `ChargedParticlePlots` Makie extension — is a plain
+  dependency again, but its `TODO.md` records a further breaking rename of exactly the constructors
+  and keywords used here (`guiding_center_4d_ode` → `odeproblem`, `tspan`/`tstep` →
+  `timespan`/`timestep`). That will arrive as 0.3 and the call sites in
+  `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` will have to follow.
 * **The 3d charged particle** is not rebuilt. Its pre-0.2 scripts are kept under `examples/`, and
   `examples/README.md` records what reviving them involves; they were already broken before the
   modernization, as they include settings and driver files that do not exist in their directory.

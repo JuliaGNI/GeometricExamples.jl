@@ -17,19 +17,13 @@ PoincareInvariants = "26663084-47d3-540f-bd97-40ca743aafa4"
 SimpleSolvers = "36b790f5-6434-4fbe-b711-1f64a1e2f6a2"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
-# The guiding-centre examples need the interface changes of ChargedParticleDynamics'
-# `finish-guiding-center-3d-upgrade` branch — the update to GeometricEquations 0.21 /
-# GeometricIntegrators 0.16 / GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the
-# 4d loop and surface invariants, and the `ChargedParticlePlots` Makie extension. The branch is not
-# merged and its released version, 0.1.0, is two ecosystem generations behind, so it is pinned by
-# revision here. Replace this with a plain `compat` bound once a version carrying those changes is
-# registered.
-[sources]
-ChargedParticleDynamics = {url = "https://github.com/JuliaPlasma/ChargedParticleDynamics.jl", rev = "finish-guiding-center-3d-upgrade"}
-
 [compat]
 CairoMakie = "0.15"
-ChargedParticleDynamics = "0.1"
+# 0.2 carries what the guiding-centre examples need: the update to GeometricEquations 0.21 /
+# GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface
+# invariants, and the `ChargedParticlePlots` Makie extension. Until it was registered this was a
+# `[sources]` pin on the branch carrying them, which is also what forced a Julia 1.11 floor.
+ChargedParticleDynamics = "0.2"
 Documenter = "1"
 GeometricIntegrators = "0.16"
 GeometricIntegratorsBase = "0.4"
@@ -37,12 +31,7 @@ GeometricProblems = "0.7.3"
 PoincareInvariants = "0.5"
 SimpleSolvers = "0.9"
 Weave = "0.10"
-# 1.11 rather than 1.10 because of the `[sources]` entry above: Pkg gained support for it in 1.11,
-# and 1.10 silently ignores it and resolves the registered ChargedParticleDynamics 0.1.0 instead,
-# which requires GeometricProblems 0.6 and so cannot be resolved against the 0.7.3 required here.
-# Lower this again together with the removal of `[sources]`, once a CPD version carrying the
-# upgrade is registered.
-julia = "1.11"
+julia = "1.10"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

@@ -21,17 +21,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The oldest supported release and the current stable one. `arch` is left to
-        # setup-julia, which picks the architecture of the runner (the macOS runners are
-        # aarch64).
-        #
-        # 1.11 explicitly rather than the `lts` alias, which is 1.10: `Project.toml` pins
-        # ChargedParticleDynamics through a `[sources]` entry, and Pkg only understands those
-        # from 1.11 on — on 1.10 it ignores the pin, resolves the registered 0.1.0 and fails on
-        # its GeometricProblems 0.6 bound. Restore `lts` together with the removal of
-        # `[sources]`, once a CPD version carrying the upgrade is registered.
+        # The dependencies require Julia 1.10 or newer, so test the long-term support
+        # release and the current stable one. `arch` is left to setup-julia, which picks
+        # the architecture of the runner (the macOS runners are aarch64).
         version:
-          - '1.11'
+          - 'lts'
           - '1'
         os:
           - ubuntu-latest
