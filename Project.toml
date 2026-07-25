@@ -37,7 +37,12 @@ GeometricProblems = "0.7.3"
 PoincareInvariants = "0.5"
 SimpleSolvers = "0.9"
 Weave = "0.10"
-julia = "1.10"
+# 1.11 rather than 1.10 because of the `[sources]` entry above: Pkg gained support for it in 1.11,
+# and 1.10 silently ignores it and resolves the registered ChargedParticleDynamics 0.1.0 instead,
+# which requires GeometricProblems 0.6 and so cannot be resolved against the 0.7.3 required here.
+# Lower this again together with the removal of `[sources]`, once a CPD version carrying the
+# upgrade is registered.
+julia = "1.11"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

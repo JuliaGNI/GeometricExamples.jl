@@ -137,7 +137,9 @@ have no counterpart in the current stack and are recorded here rather than quiet
   [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl)'s
   `finish-guiding-center-3d-upgrade` branch. Its released version, 0.1.0, is two ecosystem
   generations behind, so `Project.toml` pins the branch by revision until a version carrying those
-  changes is registered.
+  changes is registered. That pin is what sets the **Julia 1.11 floor**: `[sources]` entries are a
+  Pkg 1.11 feature, and 1.10 ignores the pin, resolves the registered 0.1.0 and fails on its
+  GeometricProblems 0.6 bound. Both the pin and the floor go together.
 * **The 3d charged particle** is not rebuilt. Its pre-0.2 scripts are kept under `examples/`, and
   `examples/README.md` records what reviving them involves; they were already broken before the
   modernization, as they include settings and driver files that do not exist in their directory.

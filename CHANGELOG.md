@@ -71,6 +71,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The Julia floor is 1.11**, and CI tests `1.11` instead of `lts`. `[sources]` entries are a Pkg
+  1.11 feature: on 1.10 the ChargedParticleDynamics pin is silently ignored, the registered 0.1.0 is
+  resolved instead, and its `GeometricProblems = "0.6"` bound cannot be satisfied against the 0.7.3
+  required here — the `lts` jobs failed at resolution before running a single test. Lower the floor
+  and restore `lts` together with the removal of `[sources]`, once a CPD version carrying the
+  upgrade is registered.
+
 - **`_write_page` moved from `src/standard-map.jl` into `src/common.jl`.** It writes a page as a flat
   list of figures, which is what both the standard map's and the guiding centre's invariant pages
   need; `write_plots`, with its fixed trajectory section skeleton, is not applicable to either.
