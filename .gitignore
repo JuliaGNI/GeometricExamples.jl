@@ -25,12 +25,6 @@ docs/src/massless-charged-particle/
 docs/src/point-vortices/
 docs/src/standard-map/
 
-# Output of the pre-0.2 HTML gallery, superseded by the woven pages above. Several gigabytes of
-# figures and solution files; safe to delete.
-docs/src/diagnostics/
-docs/src/integrators/
-docs/src/figures/
-
 # Build artifacts of Documenter
 docs/build/
 docs/site/
