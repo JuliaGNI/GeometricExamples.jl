@@ -46,6 +46,19 @@ const PLOT_THEME = Theme(
 # integrator. The values are the ones the publication companion packages settled on, which keeps
 # the two comparable. The pre-0.2 settings files asked for `nls_atol = 8eps()`,
 # `nls_rtol = 2eps()`, `nls_nmax = 20` — a tighter tolerance with fewer iterations allowed.
+#
+# `ChargedParticleDynamics` deliberately does *not* agree: its test suite asks for
+# `f_abstol = 1E-12` and leaves `f_reltol` at its `√eps` default, because `SimpleSolvers` accepts an
+# iterate when `rf ≤ f_abstol + f_reltol ‖F(x₀)‖`, so pinning both terms collapses that test to the
+# absolute one — and on an ITER-scale equilibrium, where the residual carries `p = ϑ(q)` with
+# `‖ϑ‖ ≈ 15`, no residual can fall below `‖ϑ‖ eps ≈ 3E-15` and the solver runs to its iteration cap
+# on half the steps. See `scripts/study_solver_tolerances.jl` there.
+#
+# None of the problems here is in that class, so the settings above are kept for comparability with
+# the companion packages rather than aligned with CPD. On the guiding-centre tokamak loop
+# `‖ϑ‖ ≈ 0.985`, a floor of 2.2E-16, and the solver converges in two Newton iterations without any
+# of 4000 solves reaching the cap; adopting CPD's setting was measured at ~20% on the projected VPRK
+# runs and nothing on the rest, with identical step counts and failure modes across the gallery.
 const SOLVER_OPTIONS = (f_abstol = 1E-14, f_reltol = 1E-14, max_iterations = 100)
 
 
