@@ -26,7 +26,8 @@ jobs:
   # The matrix mirrors `PAGES` in docs/weave.jl and `PAGES_<problem>` in docs/Makefile: the
   # singular Lotka-Volterra gauge has no explicit pages (its `odeproblem` is the standard one's),
   # the point vortices add a convergence study, and the standard map carries the Poincaré integral
-  # invariants instead of the trajectory diagnostics.
+  # invariants instead of the trajectory diagnostics. The four guiding-centre orbits each get the
+  # implicit Runge-Kutta and projected VPRK families, as the pre-0.2 gallery ran them.
   weave:
     name: Weave ${{ matrix.problem }} ${{ matrix.page }}
     runs-on: ubuntu-latest
@@ -66,6 +67,26 @@ jobs:
           - { problem: point-vortices,              page: vprk-lobatto-symplectic }
           - { problem: point-vortices,              page: vprk-radau }
           - { problem: point-vortices,              page: convergence }
+          - { problem: guiding-center-4d-barely-passing, page: firk-gauss }
+          - { problem: guiding-center-4d-barely-passing, page: firk-lobatto }
+          - { problem: guiding-center-4d-barely-passing, page: vprk-gauss }
+          - { problem: guiding-center-4d-barely-passing, page: vprk-srk3 }
+          - { problem: guiding-center-4d-barely-passing, page: vprk-radau }
+          - { problem: guiding-center-4d-barely-trapped, page: firk-gauss }
+          - { problem: guiding-center-4d-barely-trapped, page: firk-lobatto }
+          - { problem: guiding-center-4d-barely-trapped, page: vprk-gauss }
+          - { problem: guiding-center-4d-barely-trapped, page: vprk-srk3 }
+          - { problem: guiding-center-4d-barely-trapped, page: vprk-radau }
+          - { problem: guiding-center-4d-deeply-passing, page: firk-gauss }
+          - { problem: guiding-center-4d-deeply-passing, page: firk-lobatto }
+          - { problem: guiding-center-4d-deeply-passing, page: vprk-gauss }
+          - { problem: guiding-center-4d-deeply-passing, page: vprk-srk3 }
+          - { problem: guiding-center-4d-deeply-passing, page: vprk-radau }
+          - { problem: guiding-center-4d-deeply-trapped, page: firk-gauss }
+          - { problem: guiding-center-4d-deeply-trapped, page: firk-lobatto }
+          - { problem: guiding-center-4d-deeply-trapped, page: vprk-gauss }
+          - { problem: guiding-center-4d-deeply-trapped, page: vprk-srk3 }
+          - { problem: guiding-center-4d-deeply-trapped, page: vprk-radau }
           - { problem: standard-map,                page: poincare-1st }
           - { problem: standard-map,                page: poincare-2nd }
     steps:

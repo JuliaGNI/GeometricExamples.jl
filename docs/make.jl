@@ -57,6 +57,38 @@ makedocs(;
             "Convergence"                         => "point-vortices/point-vortices-convergence.md",
         ],
 
+        "Guiding Center 4d (Barely Passing)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-firk-gauss.md",
+            "Lobatto Runge-Kutta Methods"         => "guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-firk-lobatto.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-gauss.md",
+            "Symmetric SRK3 VPRK Method"          => "guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-srk3.md",
+            "Radau IIA VPRK Methods"              => "guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-radau.md",
+        ],
+
+        "Guiding Center 4d (Barely Trapped)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-firk-gauss.md",
+            "Lobatto Runge-Kutta Methods"         => "guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-firk-lobatto.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-gauss.md",
+            "Symmetric SRK3 VPRK Method"          => "guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-srk3.md",
+            "Radau IIA VPRK Methods"              => "guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-radau.md",
+        ],
+
+        "Guiding Center 4d (Deeply Passing)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-firk-gauss.md",
+            "Lobatto Runge-Kutta Methods"         => "guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-firk-lobatto.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-gauss.md",
+            "Symmetric SRK3 VPRK Method"          => "guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-srk3.md",
+            "Radau IIA VPRK Methods"              => "guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-radau.md",
+        ],
+
+        "Guiding Center 4d (Deeply Trapped)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-firk-gauss.md",
+            "Lobatto Runge-Kutta Methods"         => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-firk-lobatto.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-gauss.md",
+            "Symmetric SRK3 VPRK Method"          => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-srk3.md",
+            "Radau IIA VPRK Methods"              => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md",
+        ],
+
         "Standard Map" => [
             "1st Poincaré Integral Invariant"     => "standard-map/standard-map-poincare-1st.md",
             "2nd Poincaré Integral Invariant"     => "standard-map/standard-map-poincare-2nd.md",

@@ -23,6 +23,10 @@ docs/src/lotka-volterra-2d/
 docs/src/lotka-volterra-2d-singular/
 docs/src/massless-charged-particle/
 docs/src/point-vortices/
+docs/src/guiding-center-4d-barely-passing/
+docs/src/guiding-center-4d-barely-trapped/
+docs/src/guiding-center-4d-deeply-passing/
+docs/src/guiding-center-4d-deeply-trapped/
 docs/src/standard-map/
 
 # Build artifacts of Documenter

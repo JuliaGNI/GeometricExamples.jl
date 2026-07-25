@@ -11,16 +11,30 @@ TRAJECTORY_PAGES = erk \
                    vprk-lobatto-symplectic \
                    vprk-radau
 
+GUIDING_CENTER_PAGES = firk-gauss \
+                       firk-lobatto \
+                       vprk-gauss \
+                       vprk-srk3 \
+                       vprk-radau
+
 PROBLEMS = lotka-volterra-2d \
            lotka-volterra-2d-singular \
            massless-charged-particle \
            point-vortices \
+           guiding-center-4d-barely-passing \
+           guiding-center-4d-barely-trapped \
+           guiding-center-4d-deeply-passing \
+           guiding-center-4d-deeply-trapped \
            standard-map
 
 PAGES_lotka-volterra-2d          = $(TRAJECTORY_PAGES)
 PAGES_lotka-volterra-2d-singular = $(filter vprk-%,$(TRAJECTORY_PAGES))
 PAGES_massless-charged-particle  = $(TRAJECTORY_PAGES)
 PAGES_point-vortices             = $(TRAJECTORY_PAGES) convergence
+PAGES_guiding-center-4d-barely-passing = $(GUIDING_CENTER_PAGES)
+PAGES_guiding-center-4d-barely-trapped = $(GUIDING_CENTER_PAGES)
+PAGES_guiding-center-4d-deeply-passing = $(GUIDING_CENTER_PAGES)
+PAGES_guiding-center-4d-deeply-trapped = $(GUIDING_CENTER_PAGES)
 PAGES_standard-map               = poincare-1st poincare-2nd
 
 # One target per woven page: `make -j8 weave` reproduces the fan-out of the CI matrix and `make -k`

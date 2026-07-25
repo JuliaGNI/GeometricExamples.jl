@@ -20,11 +20,15 @@ import GeometricExamples
 
 # problem name (in `src/`, `weave/` and `docs/src/`) → module defined by `src/<problem>.jl`
 const PROBLEMS = (
-    "lotka-volterra-2d"          => :LotkaVolterra2dExamples,
-    "lotka-volterra-2d-singular" => :LotkaVolterra2dSingularExamples,
-    "massless-charged-particle"  => :MasslessChargedParticleExamples,
-    "point-vortices"             => :PointVorticesExamples,
-    "standard-map"               => :StandardMapExamples,
+    "lotka-volterra-2d"                => :LotkaVolterra2dExamples,
+    "lotka-volterra-2d-singular"       => :LotkaVolterra2dSingularExamples,
+    "massless-charged-particle"        => :MasslessChargedParticleExamples,
+    "point-vortices"                   => :PointVorticesExamples,
+    "guiding-center-4d-barely-passing" => :GuidingCenter4dBarelyPassingExamples,
+    "guiding-center-4d-barely-trapped" => :GuidingCenter4dBarelyTrappedExamples,
+    "guiding-center-4d-deeply-passing" => :GuidingCenter4dDeeplyPassingExamples,
+    "guiding-center-4d-deeply-trapped" => :GuidingCenter4dDeeplyTrappedExamples,
+    "standard-map"                     => :StandardMapExamples,
 )
 
 # The Euler-Lagrange equations, and hence the `odeproblem`, do not depend on the gauge, so the
@@ -35,12 +39,23 @@ const TRAJECTORY_PAGES = ("erk", "firk-gauss", "firk-lobatto",
                           "vprk-gauss", "vprk-srk3", "vprk-lobatto",
                           "vprk-lobatto-symplectic", "vprk-radau")
 
+# The guiding centre orbits get the families the pre-0.2 gallery ran for them: the fully implicit
+# Runge-Kutta methods on the explicit formulation and the projected VPRK methods on the variational
+# one. No `erk` page — an explicit method on a guiding centre orbit at these time steps is
+# unconditionally unstable — and no Lobatto VPRK page, whose 126 runs would multiply by the four
+# orbits; both are one line here if wanted.
+const GUIDING_CENTER_PAGES = ("firk-gauss", "firk-lobatto", "vprk-gauss", "vprk-srk3", "vprk-radau")
+
 const PAGES = Dict(
-    "lotka-volterra-2d"          => TRAJECTORY_PAGES,
-    "lotka-volterra-2d-singular" => filter(startswith("vprk"), TRAJECTORY_PAGES),
-    "massless-charged-particle"  => TRAJECTORY_PAGES,
-    "point-vortices"             => (TRAJECTORY_PAGES..., "convergence"),
-    "standard-map"               => ("poincare-1st", "poincare-2nd"),
+    "lotka-volterra-2d"                => TRAJECTORY_PAGES,
+    "lotka-volterra-2d-singular"       => filter(startswith("vprk"), TRAJECTORY_PAGES),
+    "massless-charged-particle"        => TRAJECTORY_PAGES,
+    "point-vortices"                   => (TRAJECTORY_PAGES..., "convergence"),
+    "guiding-center-4d-barely-passing" => GUIDING_CENTER_PAGES,
+    "guiding-center-4d-barely-trapped" => GUIDING_CENTER_PAGES,
+    "guiding-center-4d-deeply-passing" => GUIDING_CENTER_PAGES,
+    "guiding-center-4d-deeply-trapped" => GUIDING_CENTER_PAGES,
+    "standard-map"                     => ("poincare-1st", "poincare-2nd"),
 )
 
 source_path(problem, page) = joinpath(@__DIR__, "..", "weave", "$(problem)-$(page).jmd")

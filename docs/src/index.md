@@ -66,6 +66,38 @@ alongside the energy error.
 * [Radau IIA VPRK Methods](point-vortices/point-vortices-vprk-radau.md)
 * [Convergence](point-vortices/point-vortices-convergence.md)
 
+### Guiding Center 4d (Barely Passing)
+
+* [Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-firk-gauss.md)
+* [Lobatto Runge-Kutta Methods](guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-firk-lobatto.md)
+* [Gauss-Legendre VPRK Methods](guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-gauss.md)
+* [Symmetric SRK3 VPRK Method](guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-srk3.md)
+* [Radau IIA VPRK Methods](guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-radau.md)
+
+### Guiding Center 4d (Barely Trapped)
+
+* [Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-firk-gauss.md)
+* [Lobatto Runge-Kutta Methods](guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-firk-lobatto.md)
+* [Gauss-Legendre VPRK Methods](guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-gauss.md)
+* [Symmetric SRK3 VPRK Method](guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-srk3.md)
+* [Radau IIA VPRK Methods](guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-vprk-radau.md)
+
+### Guiding Center 4d (Deeply Passing)
+
+* [Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-firk-gauss.md)
+* [Lobatto Runge-Kutta Methods](guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-firk-lobatto.md)
+* [Gauss-Legendre VPRK Methods](guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-gauss.md)
+* [Symmetric SRK3 VPRK Method](guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-srk3.md)
+* [Radau IIA VPRK Methods](guiding-center-4d-deeply-passing/guiding-center-4d-deeply-passing-vprk-radau.md)
+
+### Guiding Center 4d (Deeply Trapped)
+
+* [Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-firk-gauss.md)
+* [Lobatto Runge-Kutta Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-firk-lobatto.md)
+* [Gauss-Legendre VPRK Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-gauss.md)
+* [Symmetric SRK3 VPRK Method](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-srk3.md)
+* [Radau IIA VPRK Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md)
+
 ### Standard Map
 
 * [1st Poincaré Integral Invariant](standard-map/standard-map-poincare-1st.md)
@@ -78,13 +110,19 @@ This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to Geometric
 GeometricProblems 0.7 / PoincareInvariants 0.5 / CairoMakie 0.15. A few things it used to cover
 have no counterpart in the current stack and are recorded here rather than quietly dropped.
 
-* **Guiding-centre and charged-particle examples.** The largest part of the pre-0.2 gallery — the
-  4d guiding-centre dynamics in a tokamak field, the 3d charged particle, and the guiding-centre
-  Poincaré integral invariants — comes from
-  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl), whose
-  released version still targets GeometricEquations 0.18 / GeometricProblems 0.6 and Plots
-  recipes. Those scripts are kept under `examples/` and revived when ChargedParticleDynamics
-  v0.2.0 is released; see `examples/README.md` for what that will involve.
+* **ChargedParticleDynamics is pinned to an unmerged branch.** The four guiding-centre orbits above
+  need interface changes — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 /
+  GeometricSolutions 0.6, the PoincareInvariants 0.5 rewrite of the 4d loop and surface invariants,
+  and the `ChargedParticlePlots` Makie extension — that live on
+  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl)'s
+  `finish-guiding-center-3d-upgrade` branch. Its released version, 0.1.0, is two ecosystem
+  generations behind, so `Project.toml` pins the branch by revision until a version carrying those
+  changes is registered.
+* **The guiding-centre Poincaré integral invariants and the 3d charged particle** are not yet
+  rebuilt. The pre-0.2 scripts for both are kept under `examples/`; `examples/README.md` records
+  what reviving them involves. The invariants now have everything they need on the CPD branch
+  (`guiding_center_4d_poincare_invariant_1st`/`_2nd` and the ensemble builders), so they are the
+  natural next step; the 3d charged-particle scripts were already broken before the modernization.
 * **Formal Lagrangian Runge-Kutta methods.** `IntegratorFLRK` is commented out in
   GeometricIntegrators 0.16, so the point-vortex runs on `lodeproblem_formal_lagrangian` have no
   counterpart. The method list in `src/tableau_lists.jl` records this.

@@ -6,6 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Added
+
+- **The four guiding-centre orbits are back.** The barely and deeply passing and trapped orbits of
+  the four-dimensional guiding centre dynamics in the medium-size tokamak equilibrium in cylindrical
+  coordinates — the largest part of the pre-0.2 gallery — are rebuilt as `src/guiding-center-4d.jl`
+  plus one thin module per orbit, with five pages each (the implicit Runge-Kutta and projected VPRK
+  families the pre-0.2 `runall.sh` ran for them). That takes the gallery from 32 to 52 pages.
+
+  The problems come from `ChargedParticleDynamics`, whose plotting extension is deliberately lower
+  level than the GeometricProblems recipes: it takes plain coordinate vectors and returns
+  `(figure, axis)`, which is what lets it draw the orbit in cartesian 3-space and over the
+  equilibrium's flux surfaces rather than in the first two state components. `run_list` therefore
+  gets *adapters* — `plot_solution` (poloidal `R`–`Z`), `plot_phase_portrait` (cartesian 3d) and
+  `plot_traces` (the four state components) — which do the downsampling and truncation the recipes
+  would otherwise do and drop the axis.
+
+  The toroidal momentum is shown alongside the energy through the `invariants` field of the recipe
+  bundle, as the point vortices' angular momentum is. It is passed as the function rather than a key,
+  since the guiding-centre problems declare only the energy among their `invariants`. The orbits run
+  with `periodic = false`: the toroidal angle is periodic and wrapping it tears the trajectory
+  figures apart.
+
+### Changed
+
+- **`ChargedParticleDynamics` is a dependency again**, pinned by revision to its
+  `finish-guiding-center-3d-upgrade` branch. That branch carries the interface changes the examples
+  need — the update to GeometricEquations 0.21 / GeometricIntegrators 0.16 / GeometricSolutions 0.6,
+  the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface invariants, and the
+  `ChargedParticlePlots` Makie extension — and is neither merged nor released; the released 0.1.0 is
+  two ecosystem generations behind. Replace the `[sources]` entry with a plain `compat` bound once a
+  version carrying those changes is registered.
+
+### Known limitations
+
+The guiding-centre **Poincaré integral invariants** are not rebuilt yet, though everything they need
+is now available: the CPD branch provides `guiding_center_4d_poincare_invariant_1st(N)`/`..._2nd(N)`
+and the ensemble builders, and `src/standard-map.jl` is the worked example of the same pattern. The
+3d charged particle remains unmigrated and was already broken before the modernization. See
+`examples/README.md`.
+
+
 ## [0.2.0] - 2026-07-25
 
 The gallery is modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.16,

@@ -3,12 +3,9 @@ uuid = "1f9cae71-2432-55b2-8d6a-2439aa3a6c65"
 version = "0.2.0"
 authors = ["Michael Kraus <michael.kraus@ipp.mpg.de>"]
 
-# `ChargedParticleDynamics` and `ElectromagneticFields` return together with the guiding-centre
-# and charged-particle examples, which are parked until ChargedParticleDynamics v0.2.0 is
-# released; see `examples/README.md`.
-
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+ChargedParticleDynamics = "209b3593-7183-5600-9f8f-df5ce7fddd64"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 GeometricIntegrators = "dcce2d33-59f6-5b8d-9047-0defad88ae06"
 GeometricIntegratorsBase = "71212ab4-08a2-48eb-a02b-4cbad0e9c44a"
@@ -20,8 +17,19 @@ PoincareInvariants = "26663084-47d3-540f-bd97-40ca743aafa4"
 SimpleSolvers = "36b790f5-6434-4fbe-b711-1f64a1e2f6a2"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
+# The guiding-centre examples need the interface changes of ChargedParticleDynamics'
+# `finish-guiding-center-3d-upgrade` branch — the update to GeometricEquations 0.21 /
+# GeometricIntegrators 0.16 / GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the
+# 4d loop and surface invariants, and the `ChargedParticlePlots` Makie extension. The branch is not
+# merged and its released version, 0.1.0, is two ecosystem generations behind, so it is pinned by
+# revision here. Replace this with a plain `compat` bound once a version carrying those changes is
+# registered.
+[sources]
+ChargedParticleDynamics = {url = "https://github.com/JuliaPlasma/ChargedParticleDynamics.jl", rev = "finish-guiding-center-3d-upgrade"}
+
 [compat]
 CairoMakie = "0.15"
+ChargedParticleDynamics = "0.1"
 Documenter = "1"
 GeometricIntegrators = "0.16"
 GeometricIntegratorsBase = "0.4"

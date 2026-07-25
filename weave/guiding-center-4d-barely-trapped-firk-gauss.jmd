@@ -1,0 +1,9 @@
+# Guiding Center 4d Barely Trapped with Gauss-Legendre Runge-Kutta Methods
+
+The time step and number of time steps are those of this orbit, set in
+`src/guiding-center-4d.jl`; the toroidal momentum is shown alongside the energy, as the
+second invariant of the guiding centre dynamics.
+
+```julia
+run_list(odeproblem(), "Guiding Center 4d Barely Trapped", tableaus_firk_gauss())
+```

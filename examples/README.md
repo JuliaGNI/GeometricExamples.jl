@@ -1,57 +1,63 @@
-# Parked examples
+# Superseded examples
 
 Everything in this directory is the pre-0.2 form of the gallery: scripts written against
 GeometricIntegrators 0.3/0.4, the removed `Simulation`/`run!`/HDF5 triad, `set_config`,
-`getTableau*` constructors, and five different plotting backends. The problems that
-[GeometricProblems.jl](https://github.com/JuliaGNI/GeometricProblems.jl) provides —
-`lotka_volterra_2d/`, `massless_charged_particle/`, `point_vortices/`, `standard_map/` — have been
-migrated to `src/` and `weave/`; the directories are kept here only for reference against the
-published figures and are not part of the build.
+`getTableau*` constructors, and five different plotting backends. **None of it is part of the
+build**; the directories are kept for reference against the published figures.
 
-The two remaining families **have not been migrated** and are the subject of this file.
+Migration status, family by family:
 
-## guiding_center_4d, charged_particles_3d
+| | |
+|---|---|
+| `lotka_volterra_2d/`, `massless_charged_particle/`, `point_vortices/`, `standard_map/` | migrated to `src/` + `weave/` |
+| `guiding_center_4d/` trajectory runs | migrated — see below |
+| `guiding_center_4d/` Poincaré invariants | not yet, everything needed is in place |
+| `charged_particles_3d/` | not migrated, and broken before the migration too |
 
-These depend on
-[ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) for the
-problems (`GuidingCenter4d.TokamakMediumCylindrical` and friends), the initial conditions, the
-diagnostics and the plot recipes. Its released version 0.1.0 targets GeometricEquations 0.18 /
-GeometricProblems 0.6 / ElectromagneticFields 0.5 and ships `Plots`/`RecipesBase` recipes, none of
-which is compatible with the GeometricIntegrators 0.16 / GeometricProblems 0.7 stack the rest of
-this gallery now uses. An upgrade is in progress upstream; these examples are revived once
-**ChargedParticleDynamics v0.2.0** is released.
+## guiding_center_4d — trajectory pages: **migrated**
 
-What that will involve, based on how the migrated examples turned out:
+The four orbits of the medium-size tokamak in cylindrical coordinates
+(`tokamak_fast_particles/guiding_center_4d_fast_*.jl`) are now built by
+`src/guiding-center-4d.jl` plus one thin module per orbit, and the pages
+`weave/guiding-center-4d-<orbit>-<family>.jmd`. The scripts here are kept for reference against the
+published figures.
 
-* **A problem module per case.** `src/guiding-center-4d.jl` in the shape of
-  `src/massless-charged-particle.jl`: the `Δt`/`nt` constants from the per-case settings files
-  (`tokamak_fast_particles/guiding_center_4d_fast_barely_passing.jl` and its siblings) and a
-  `PLOT_RECIPES` bundle binding the problem's recipes. One module per particle case, since each has
-  its own initial conditions and time step.
-* **Plot recipes from CPD's Makie extension.** `guiding_center_4d.jl`'s `plottrajectory`
-  (`:trajectoryRZ`, `:trajectory3d`), `plotenergyerror` and `plottoroidalmomentumerror` calls map
-  onto the `ChargedParticlePlots` extension that the CPD working tree is growing. The
-  `plot_solution`/`plot_phase_portrait`/`plot_traces` triple that `run_list` expects has to be
-  named there, as `GeometricProblems` does for its own problems.
-* **The toroidal momentum through the generic diagnostics.**
-  `problem.compute_toroidal_momentum_error` becomes an entry in the `invariants` field of
-  `PLOT_RECIPES`, handled by `GeometricProblems.Diagnostics.plot_invariant_error` — the same
-  mechanism the point vortices use for their angular momentum. This requires the guiding-centre
-  problems to declare the toroidal momentum among their `invariants`, as the point-vortex problems
-  now do.
-* **Poincaré invariants on the new interface.** `guiding_center_4d_poincare_invariant_{1st,2nd}.jl`
-  and the `poincare_invariant_{1st,2nd}/` trees are built on the removed
-  `PoincareInvariant1st(equ, loop, …)` / `evaluate_poincare_invariant` / `write_to_hdf5` API. They
-  move onto PoincareInvariants 0.5 the way `src/standard-map.jl` does: `FirstPI`/`SecondPI` with the
-  problem's own one- and two-form, `PIEnsembleProblem(prob, pinv, init)` with CPD's
-  `guiding_center_4d_loop.jl`/`guiding_center_4d_surface.jl` parameterisations, `integrate`, then
-  `compute!`. The HDF5 output disappears; `plot_invariant`, `plot_loop` and `plot_surface` come from
-  the PoincareInvariants Makie extension.
+How the pieces map:
+
+* The per-case `Δt`/`ntime` of the old settings files are the `CASES` table in
+  `src/guiding-center-4d.jl`.
+* `plottrajectory(sol; plottype = :trajectoryRZ)` and `:trajectory3d` and the component traces
+  become the three recipe slots `plot_solution`, `plot_phase_portrait` and `plot_traces`. They are
+  *adapters*: the `ChargedParticlePlots` extension takes plain coordinate vectors and returns
+  `(figure, axis)` — which is what lets it draw the orbit in cartesian 3-space rather than in the
+  first two state components — so the adapters do the downsampling and truncation the
+  GeometricProblems recipes would otherwise do, and drop the axis.
+* `compute_toroidal_momentum_error` becomes an entry in the `invariants` field of `PLOT_RECIPES`,
+  handled by `GeometricProblems.Diagnostics.plot_invariant_error`, as the point vortices' angular
+  momentum is. It is passed as the *function* rather than a key, because the guiding-centre problems
+  declare only the energy among their `invariants`.
+* `periodic = false`: the toroidal angle is periodic and wrapping it tears the trajectory figures
+  apart. The old recipes unwrapped it; the solution now simply keeps winding.
 * **The `*_comp` variants disappear.** `guiding_center_4d_fast_*_{firk,vprk}_comp.jl` differ from
   the plain scripts only in `set_config(:tab_compensated_summation, true)`, which no longer exists,
   so they would be exact duplicates.
 
-## charged_particles_3d is broken independently of this
+`ChargedParticleDynamics` is pinned to its `finish-guiding-center-3d-upgrade` branch by revision in
+`Project.toml`; that branch carries the interface changes and is not yet merged or released.
+
+## guiding_center_4d — Poincaré invariants: **not yet migrated**
+
+`guiding_center_4d_poincare_invariant_{1st,2nd}.jl` and the `poincare_invariant_{1st,2nd}/` trees
+are built on the removed `PoincareInvariant1st(equ, loop, …)` / `evaluate_poincare_invariant` /
+`write_to_hdf5` API. Everything needed to rebuild them is now on the CPD branch:
+`guiding_center_4d_poincare_invariant_1st(N)` and `..._2nd(N)` return a noncanonical `FirstPI` or
+`SecondPI` built from the guiding-centre one- and two-form, and
+`guiding_center_4d_loop_ensemble(prob, pinv)` samples the parameterisation into an
+`EnsembleProblem`. `src/standard-map.jl` is the worked example of the same pattern. The HDF5 output
+disappears; the figures come from `plot_poincare_invariant_error`, `plot_poincare_loop` and
+`plot_poincare_surface` in CPD's Makie extension, which draw in cartesian 3-space.
+
+## charged_particles_3d: **not migrated, and broken independently**
 
 `charged_particles_3d/*.jl` do not run and did not run before the migration either: they
 `include("guiding_center_4d_settings_firk.jl")` and `include("guiding_center_4d.jl")`, neither of

@@ -1,0 +1,9 @@
+# Guiding Center 4d Deeply Trapped with Symmetric SRK3 VPRK Method and Projections
+
+The time step and number of time steps are those of this orbit, set in
+`src/guiding-center-4d.jl`; the toroidal momentum is shown alongside the energy, as the
+second invariant of the guiding centre dynamics.
+
+```julia
+run_list(iodeproblem(), "Guiding Center 4d Deeply Trapped", tableaus_vprk_srk3())
+```
