@@ -1,6 +1,10 @@
 
 # GeometricExamples.jl
 
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliagni.github.io/GeometricExamples.jl/dev/)
+[![CI](https://github.com/JuliaGNI/GeometricExamples.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaGNI/GeometricExamples.jl/actions/workflows/CI.yml)
+[![Documentation build](https://github.com/JuliaGNI/GeometricExamples.jl/actions/workflows/Documentation.yaml/badge.svg)](https://github.com/JuliaGNI/GeometricExamples.jl/actions/workflows/Documentation.yaml)
+
 This package collects simulation results of
 [GeometricIntegrators.jl](https://github.com/JuliaGNI/GeometricIntegrators.jl) belonging to various
 publications. The example problems come from
@@ -8,17 +12,35 @@ publications. The example problems come from
 invariants from [PoincareInvariants.jl](https://github.com/JuliaGNI/PoincareInvariants.jl), and all
 figures are produced with [CairoMakie](https://docs.makie.org).
 
-Each page of the documentation runs one family of integration methods over one problem and
-collects, per run, the trajectory, its time traces, and the errors of the conserved quantities.
-Runs that diverge are reported on their page together with the trajectory up to the point of
-failure: comparing methods that do and do not preserve the geometric structure is the point of
-these examples, so failures are shown rather than hidden.
+**The results are the documentation: [juliagni.github.io/GeometricExamples.jl/dev](https://juliagni.github.io/GeometricExamples.jl/dev/).**
+Each of its 65 pages runs one family of integration methods over one problem and collects, per run,
+the trajectory, its time traces, and the errors of the conserved quantities. Runs that diverge are
+reported on their page together with the trajectory up to the point of failure: comparing methods
+that do and do not preserve the geometric structure is the point of these examples, so failures are
+shown rather than hidden.
 
-Problems covered: the two-dimensional Lotka-Volterra model in its standard and its singular gauge,
-the massless charged particle in 2d, the planar point vortices (including a convergence study), four
-orbits of the four-dimensional guiding centre dynamics in a tokamak equilibrium and its first and
-second Poincaré integral invariants, and the Chirikov standard map (first and second Poincaré
-integral invariant).
+Problems covered:
+
+* [Lotka-Volterra 2d](https://juliagni.github.io/GeometricExamples.jl/dev/lotka-volterra-2d/lotka-volterra-2d-erk/),
+  in its [standard](https://juliagni.github.io/GeometricExamples.jl/dev/lotka-volterra-2d/lotka-volterra-2d-vprk-gauss/)
+  and its [singular gauge](https://juliagni.github.io/GeometricExamples.jl/dev/lotka-volterra-2d-singular/lotka-volterra-2d-singular-vprk-gauss/)
+* [The massless charged particle](https://juliagni.github.io/GeometricExamples.jl/dev/massless-charged-particle/massless-charged-particle-firk-gauss/) in 2d
+* [The planar point vortices](https://juliagni.github.io/GeometricExamples.jl/dev/point-vortices/point-vortices-vprk-gauss/),
+  including a [convergence study](https://juliagni.github.io/GeometricExamples.jl/dev/point-vortices/point-vortices-convergence/)
+* The four-dimensional guiding centre dynamics: four orbits in a
+  [medium-size](https://juliagni.github.io/GeometricExamples.jl/dev/guiding-center-4d-barely-passing/guiding-center-4d-barely-passing-vprk-gauss/)
+  and a [small](https://juliagni.github.io/GeometricExamples.jl/dev/guiding-center-4d-small-barely-passing/guiding-center-4d-small-barely-passing-vprk-gauss/)
+  tokamak equilibrium, and its
+  [first](https://juliagni.github.io/GeometricExamples.jl/dev/guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-vprk-gauss/)
+  and [second](https://juliagni.github.io/GeometricExamples.jl/dev/guiding-center-4d-poincare-2nd/guiding-center-4d-poincare-2nd-tokamak-vprk-gauss/)
+  Poincaré integral invariants
+* The Chirikov standard map, again with its
+  [first](https://juliagni.github.io/GeometricExamples.jl/dev/standard-map/standard-map-poincare-1st/)
+  and [second](https://juliagni.github.io/GeometricExamples.jl/dev/standard-map/standard-map-poincare-2nd/)
+  Poincaré integral invariant
+
+Only `dev` is published: the package carries no release tags, so Documenter builds nothing under
+`stable`.
 
 ## Reproducing the Figures
 
