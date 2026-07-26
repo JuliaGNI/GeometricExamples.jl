@@ -40,7 +40,6 @@ makedocs(;
             "Lobatto Runge-Kutta Methods"         => "massless-charged-particle/massless-charged-particle-firk-lobatto.md",
             "Gauss-Legendre VPRK Methods"         => "massless-charged-particle/massless-charged-particle-vprk-gauss.md",
             "Symmetric SRK3 VPRK Method"          => "massless-charged-particle/massless-charged-particle-vprk-srk3.md",
-            "Lobatto VPRK Methods"                => "massless-charged-particle/massless-charged-particle-vprk-lobatto.md",
             "Symplectic Lobatto VPRK Pairs"       => "massless-charged-particle/massless-charged-particle-vprk-lobatto-symplectic.md",
             "Radau IIA VPRK Methods"              => "massless-charged-particle/massless-charged-particle-vprk-radau.md",
         ],

@@ -36,7 +36,7 @@ PROBLEMS = lotka-volterra-2d \
 
 PAGES_lotka-volterra-2d          = $(TRAJECTORY_PAGES)
 PAGES_lotka-volterra-2d-singular = $(filter vprk-%,$(TRAJECTORY_PAGES))
-PAGES_massless-charged-particle  = $(TRAJECTORY_PAGES)
+PAGES_massless-charged-particle  = $(filter-out vprk-lobatto,$(TRAJECTORY_PAGES))
 PAGES_point-vortices             = $(TRAJECTORY_PAGES) convergence
 PAGES_guiding-center-4d-barely-passing = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-barely-trapped = $(GUIDING_CENTER_PAGES)

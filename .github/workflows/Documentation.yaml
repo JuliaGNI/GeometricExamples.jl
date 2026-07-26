@@ -65,7 +65,6 @@ jobs:
           - { problem: massless-charged-particle,   page: firk-lobatto }
           - { problem: massless-charged-particle,   page: vprk-gauss }
           - { problem: massless-charged-particle,   page: vprk-srk3 }
-          - { problem: massless-charged-particle,   page: vprk-lobatto }
           - { problem: massless-charged-particle,   page: vprk-lobatto-symplectic }
           - { problem: massless-charged-particle,   page: vprk-radau }
           - { problem: point-vortices,              page: erk }

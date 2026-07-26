@@ -71,6 +71,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The massless charged particle runs 10⁴ time steps instead of 10⁵, and has no Lobatto VPRK
+  page.** This workflow had never run before this release, so the cost of its pages had never been
+  measured: on the CI runners its `vprk-gauss`, `vprk-lobatto` and `vprk-lobatto-symplectic` pages
+  each exceeded even a four hour job timeout, while `point-vortices` runs the same 126-method
+  Lobatto matrix in 49 minutes — at 10⁴ steps rather than 10⁵. It is now the only problem whose run
+  length is not the published one; the 36-run Gauss and symplectic-Lobatto matrices cover the same
+  ground as the dropped 126-run page. A single missing page fails the whole `documenter` job
+  (`'…-vprk-gauss.md' is not an existing page!`), so a page that cannot be built has to leave the
+  registries rather than be left failing.
+
 - **The weave job's `timeout-minutes` is 240**, up from 120, which killed the two tokamak
   `vprk-gauss` invariant pages. Measured on the CI runners: 19-20 min for the six-method
   `firk-gauss` pages, 46-49 min for the symmetric field's 36-method `vprk-gauss` pages, and over

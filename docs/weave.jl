@@ -60,7 +60,10 @@ const POINCARE_PAGES = ("tokamak-firk-gauss", "tokamak-vprk-gauss", "symmetric-v
 const PAGES = Dict(
     "lotka-volterra-2d"                => TRAJECTORY_PAGES,
     "lotka-volterra-2d-singular"       => filter(startswith("vprk"), TRAJECTORY_PAGES),
-    "massless-charged-particle"        => TRAJECTORY_PAGES,
+    # No Lobatto VPRK page: its 126 runs over this problem's time interval are the most expensive
+    # combination in the gallery and did not fit a four hour job timeout even after the run length
+    # was cut to 10⁴ steps. The 36-run Gauss and symplectic-Lobatto matrices cover the same ground.
+    "massless-charged-particle"        => filter(!=("vprk-lobatto"), TRAJECTORY_PAGES),
     "point-vortices"                   => (TRAJECTORY_PAGES..., "convergence"),
     "guiding-center-4d-barely-passing" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-barely-trapped" => GUIDING_CENTER_PAGES,

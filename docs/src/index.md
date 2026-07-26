@@ -43,12 +43,16 @@ same Euler-Lagrange equations but to different variational integrators. Its expl
 
 ### Massless Charged Particle
 
+This problem is integrated over 10⁴ time steps rather than the 10⁵ of the other problems, and has no
+Lobatto VPRK page: at the published run length its 126-run Lobatto matrix is the most expensive
+combination in the gallery and does not fit the documentation build. The 36-run Gauss and
+symplectic-Lobatto matrices below cover the same ground.
+
 * [Explicit Runge-Kutta Methods](massless-charged-particle/massless-charged-particle-erk.md)
 * [Gauss-Legendre Runge-Kutta Methods](massless-charged-particle/massless-charged-particle-firk-gauss.md)
 * [Lobatto Runge-Kutta Methods](massless-charged-particle/massless-charged-particle-firk-lobatto.md)
 * [Gauss-Legendre VPRK Methods](massless-charged-particle/massless-charged-particle-vprk-gauss.md)
 * [Symmetric SRK3 VPRK Method](massless-charged-particle/massless-charged-particle-vprk-srk3.md)
-* [Lobatto VPRK Methods](massless-charged-particle/massless-charged-particle-vprk-lobatto.md)
 * [Symplectic Lobatto VPRK Pairs](massless-charged-particle/massless-charged-particle-vprk-lobatto-symplectic.md)
 * [Radau IIA VPRK Methods](massless-charged-particle/massless-charged-particle-vprk-radau.md)
 
@@ -177,6 +181,12 @@ have no counterpart in the current stack and are recorded here rather than quiet
   `src/guiding-center-4d-poincare.jl`, together with the measurements showing that they do not
   change the conclusions: the guiding-centre invariants are unchanged to ten digits between 100 and
   800 sample points, while the drift they measure spans six orders of magnitude between methods.
+
+  The massless charged particle is the one problem where this bites hardest, and its run length is
+  now 10⁴ rather than the 10⁵ the companion packages use. Measured on the CI runners, which are
+  several times slower than a development machine, its three VPRK pages each exceeded a four hour
+  job timeout at 10⁵ steps, while `point-vortices` runs the same 126-method Lobatto matrix in 49
+  minutes at 10⁴. Its Lobatto VPRK page is dropped as well.
 * **One page per time step.** The pre-0.2 gallery published the guiding-centre invariants as four
   pages per method family, one for each of Δt ∈ {10, 5, 2, 1}. The four runs are now overlaid in
   one figure per method instead, which is the same computation and puts the comparison the four

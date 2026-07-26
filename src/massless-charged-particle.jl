@@ -4,11 +4,14 @@ module MasslessChargedParticleExamples
     # (`examples/massless_charged_particle/massless_charged_particle_settings.jl` before v0.2).
     const Δt = 0.1
 
-    # The published figures used 10⁶ time steps. With the projection matrix of the VPRK pages
-    # running well over a hundred methods per page, that is more than an automated documentation
-    # build can carry, so the gallery now runs 10⁵ steps — a tenth of the time interval, and the
-    # same length the publication companion packages use. Raise it for a one-off long run.
-    const nt = 100000
+    # The published figures used 10⁶ time steps, and the first cut of this gallery 10⁵ — a tenth of
+    # the time interval, and the length the publication companion packages use. Even that is beyond
+    # what the documentation build can carry: at 10⁵ steps the three VPRK pages of this problem each
+    # exceeded a four hour job timeout on the CI runners, which are several times slower than a
+    # development machine, while `point-vortices` runs the same 126-method Lobatto matrix in 49
+    # minutes at 10⁴. This problem is now the only one whose run length is not the published one;
+    # raise it for a one-off long run.
+    const nt = 10000
 
     using GeometricIntegrators
 
