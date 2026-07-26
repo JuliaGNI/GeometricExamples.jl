@@ -146,8 +146,8 @@ tableaus_vprk_radau() = Tuple(
 Splitting methods.
 
 Currently unused: a splitting method needs an `sodeproblem`, and none of the problems this
-gallery covers provides one. The only consumer used to be the charged-particle examples, which
-are parked until ChargedParticleDynamics v0.2.0; see `examples/README.md`.
+gallery covers provides one. Its only consumer was the pre-0.2 3d charged particle, which is the
+one family that was never migrated — see *Known Gaps* in the documentation.
 """
 tableaus_splitting() = (
     ( LieA(),          "LieA"          ),

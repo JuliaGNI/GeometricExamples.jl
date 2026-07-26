@@ -161,9 +161,11 @@ have no counterpart in the current stack and are recorded here rather than quiet
   and keywords used here (`guiding_center_4d_ode` → `odeproblem`, `tspan`/`tstep` →
   `timespan`/`timestep`). That will arrive as 0.3 and the call sites in
   `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` will have to follow.
-* **The 3d charged particle** is not rebuilt. Its pre-0.2 scripts are kept under `examples/`, and
-  `examples/README.md` records what reviving them involves; they were already broken before the
-  modernization, as they include settings and driver files that do not exist in their directory.
+* **The 3d charged particle** is not rebuilt. It was already broken before the modernization: its
+  pre-0.2 scripts `include` settings and driver files that do not exist in their directory, so they
+  cannot have run, and what was intended is not recoverable from them. Those scripts have since been
+  removed along with the rest of the pre-0.2 gallery; `CHANGELOG.md` records the details and the git
+  history holds the originals.
 * **Two of the three error curves of the published Poincaré invariant figures.** Each pre-0.2 run
   drew the invariant of the one-form on ``q``, the canonical ``\oint_\gamma p_i \, dq^i`` of the
   variational solution, and a Lagrange-multiplier-corrected form. PoincareInvariants 0.5 computes

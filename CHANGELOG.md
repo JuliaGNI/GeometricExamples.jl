@@ -127,13 +127,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   broke the build outright when the branch was deleted on merge — a branch pin has no guarantee of
   outliving the branch, which is worth remembering the next time one looks expedient.
 
+### Removed
+
+- **The `examples/` directory**, the pre-0.2 form of the gallery: 83 scripts — 77 Julia files and
+  six shell runners — written against GeometricIntegrators 0.3/0.4, the removed
+  `Simulation`/`run!`/HDF5 triad, `set_config`, `getTableau*` constructors and five plotting
+  backends. Every family it covered is now in `src/` + `weave/`, and the git history holds the
+  originals; what is worth carrying forward rather than looking up is recorded here.
+
+  Its README described the directory as kept "for reference against the published figures", but those
+  figures were never committed — the 221 PNGs archived beside the point-vortex and standard-map
+  scripts were untracked working-tree files throughout, so no clone ever had them. The published
+  figures are the papers'.
+
+  **The one piece of functionality that did not come across** is
+  `point_vortices/point_vortices_convergence_comparison.jl`, which refined a time step twelve times
+  from `Δt = 0.2` and overlaid the five VPRK projections on shared axes. `src/convergence.jl` does
+  the study, but writes a `_convergence`/`_order` figure per method instead of one comparing them,
+  and it measures the error against a reference run rather than between successive refinements. An
+  overlay variant of `run_convergence` would restore it.
+
+  **Four things in there had never run at all**, so nothing was lost by not porting them, and it is
+  worth recording that the omissions were not oversights:
+  - `charged_particles_3d/*.jl` `include` settings and driver files that do not exist in that
+    directory — the paths point into `../guiding_center_4d/`. Reviving them means deciding what was
+    intended; it is not recoverable from the scripts.
+  - `guiding_center_4d/papers/*.jl` call `get_tableau_list_vprk_papers()` and
+    `get_tableau_list_vprk_lob()`, which exist in no committed revision of `src/`.
+  - `guiding_center_4d/guiding_center_4d_symmetric_poincare_invariant_1st.jl` defines none of the
+    `Δt`, `ntime`, `nloop`, `pinv` or `tableau_list` the driver it includes reads, and imports two
+    names (`plot_loop`, `plot_trajectories`) that never existed.
+  - `guiding_center_4d/tokamak_slow_particles/*.jl` read a `run_id` they never define and had no
+    driver wrapper, which is why the small tokamak's pages reproduce a configuration and not a
+    figure set. Also `guiding_center_4d/poincare_invariant_2nd/*_fast_*.jl`, whose
+    `include("guiding_center_4d_settings_*.jl")` is missing the `../` its siblings have, and
+    `lotka_volterra_4d/`, which was an empty directory.
+
+  The `Δt` and step counts of the old settings files survive as the `CASES` table of
+  `src/guiding-center-4d.jl` and the `Δt`/`nt` constants at the top of each problem module. Those
+  comments still name the pre-0.2 script each value came from, and are kept for provenance: the
+  `examples/…` paths in them, and in `docs/weave.jl`, resolve in the git history rather than in the
+  working tree.
+
 ### Known limitations
 
 The **3d charged particle** remains unmigrated and was already broken before the modernization. Of the
 three error curves each published Poincaré invariant run drew, only the invariant of the one-form
 survives: `PoincareInvariants` 0.5 computes one invariant from the form it is handed, and a projected
-solution no longer carries the `λ` series the third one needed. See `examples/README.md` and the
-*Known Gaps* section of the documentation.
+solution no longer carries the `λ` series the third one needed. See the *Known Gaps* section of the
+documentation.
 
 
 ## [0.2.0] - 2026-07-25

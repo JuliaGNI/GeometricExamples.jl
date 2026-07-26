@@ -52,14 +52,12 @@ drivers, the crash reporting and the CairoMakie stack — in a temporary directo
 
 ## Status
 
-The pre-0.2 scripts under `examples/` are not part of the build; they are kept for reference against
-the published figures. Everything there has been migrated except the 3d charged particle, which was
-already broken before the modernization. The guiding-centre examples that were migrated need
-[ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) pinned to an
-unmerged branch, as its released version still targets the previous generation of the ecosystem. See
-[`examples/README.md`](examples/README.md) for how the old scripts map onto the new ones, and the
-*Known Gaps* section of the documentation for everything the modernization to
-GeometricIntegrators 0.16 left behind.
+Every family of the pre-0.2 gallery has been migrated to `src/` + `weave/` except the 3d charged
+particle, which was already broken before the modernization. The pre-0.2 scripts themselves have been
+removed; the `[Unreleased]` section of [`CHANGELOG.md`](CHANGELOG.md) records how they map onto the
+current structure, which of them never ran, and the one study that did not come across, and the git
+history holds the originals. The *Known Gaps* section of the documentation covers the integrators,
+outputs and run lengths that the modernization to GeometricIntegrators 0.16 left behind.
 
 ## References
 
