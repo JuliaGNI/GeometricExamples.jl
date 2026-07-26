@@ -265,4 +265,4 @@ and the never-called CGVI code path.
 
 The HTML gallery built on GeometricIntegrators 0.3/0.4. See the git history.
 
-[0.2.0]: https://github.com/DDMGNI/GeometricExamples.jl/releases/tag/v0.2.0
+[0.2.0]: https://github.com/JuliaGNI/GeometricExamples.jl/releases/tag/v0.2.0

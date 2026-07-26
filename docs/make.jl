@@ -112,7 +112,7 @@ makedocs(;
 # the documentation. Defaults to deploying, so that local builds and manual runs are unaffected.
 if get(ENV, "DEPLOY_DOCS", "true") == "true"
     deploydocs(;
-        repo="github.com/DDMGNI/GeometricExamples.jl",
+        repo="github.com/JuliaGNI/GeometricExamples.jl",
         devbranch="main"
     )
 else
