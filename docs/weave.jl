@@ -28,6 +28,10 @@ const PROBLEMS = (
     "guiding-center-4d-barely-trapped" => :GuidingCenter4dBarelyTrappedExamples,
     "guiding-center-4d-deeply-passing" => :GuidingCenter4dDeeplyPassingExamples,
     "guiding-center-4d-deeply-trapped" => :GuidingCenter4dDeeplyTrappedExamples,
+    "guiding-center-4d-small-barely-passing" => :GuidingCenter4dSmallBarelyPassingExamples,
+    "guiding-center-4d-small-barely-trapped" => :GuidingCenter4dSmallBarelyTrappedExamples,
+    "guiding-center-4d-small-deeply-passing" => :GuidingCenter4dSmallDeeplyPassingExamples,
+    "guiding-center-4d-small-deeply-trapped" => :GuidingCenter4dSmallDeeplyTrappedExamples,
     "guiding-center-4d-poincare-1st"   => :GuidingCenter4dPoincare1stExamples,
     "guiding-center-4d-poincare-2nd"   => :GuidingCenter4dPoincare2ndExamples,
     "standard-map"                     => :StandardMapExamples,
@@ -47,6 +51,13 @@ const TRAJECTORY_PAGES = ("erk", "firk-gauss", "firk-lobatto",
 # unconditionally unstable — and no Lobatto VPRK page, whose 126 runs would multiply by the four
 # orbits; both are one line here if wanted.
 const GUIDING_CENTER_PAGES = ("firk-gauss", "firk-lobatto", "vprk-gauss", "vprk-srk3", "vprk-radau")
+
+# The small tokamak's four orbits get the two Gauss families only. The pre-0.2 gallery defined these
+# cases (`examples/guiding_center_4d/tokamak_slow_particles/`) but never wrote the driver wrappers
+# that would have run them, so there is no published family set to match, and the orbit comparison —
+# passing against trapped — is what distinguishes them rather than the method list. The Lobatto,
+# SRK3 and Radau families are one line here if wanted.
+const SMALL_TOKAMAK_PAGES = ("firk-gauss", "vprk-gauss")
 
 # The Poincaré invariant pages carry the geometry in the page name, because it selects the
 # equilibrium submodule of `ChargedParticleDynamics`. Their page set is the one the pre-0.2 gallery
@@ -69,6 +80,10 @@ const PAGES = Dict(
     "guiding-center-4d-barely-trapped" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-deeply-passing" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-deeply-trapped" => GUIDING_CENTER_PAGES,
+    "guiding-center-4d-small-barely-passing" => SMALL_TOKAMAK_PAGES,
+    "guiding-center-4d-small-barely-trapped" => SMALL_TOKAMAK_PAGES,
+    "guiding-center-4d-small-deeply-passing" => SMALL_TOKAMAK_PAGES,
+    "guiding-center-4d-small-deeply-trapped" => SMALL_TOKAMAK_PAGES,
     "guiding-center-4d-poincare-1st"   => POINCARE_PAGES,
     "guiding-center-4d-poincare-2nd"   => POINCARE_PAGES,
     "standard-map"                     => ("poincare-1st", "poincare-2nd"),

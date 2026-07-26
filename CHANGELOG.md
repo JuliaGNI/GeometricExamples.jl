@@ -30,6 +30,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with `periodic = false`: the toroidal angle is periodic and wrapping it tears the trajectory
   figures apart.
 
+- **The small tokamak's four orbits**, from
+  `examples/guiding_center_4d/tokamak_slow_particles/`, as eight pages. Its particles are far slower
+  than the medium tokamak's — `u ~ 8E-4` against `3E-1` — so they run at `Δt = 800` rather than
+  `2.5`, which is the time step those scripts used, over the same 12500 steps as every other case.
+  The scripts asked for 1.25·10⁶ steps, but at 12500 the orbits still close between 208 and 1239
+  times, so the longer interval buys nothing for the figures.
+
+  These cases had never run: they read a `run_id` they never define, no `_firk`/`_vprk` wrapper was
+  written for them and no runner references them, so there is no published figure set to reproduce —
+  only the configuration. For the same reason there is no family set to match, and they get the two
+  Gauss families rather than all five. That takes the gallery to 65 pages.
+
+  `src/guiding-center-4d.jl` reaches its equilibria through an `EQUILIBRIA` table instead of
+  `using` one of them, as `src/guiding-center-4d-poincare.jl` already had to: every guiding-centre
+  submodule of ChargedParticleDynamics exports the same names, so no two can be brought into scope
+  together. The plot adapters therefore take the equilibrium as their first argument and
+  `plot_recipes(equ)` binds it into the bundle `run_list` consumes, since it is a property of the
+  case rather than of the solution. `CASES` gained the equilibrium and names its initial conditions
+  by symbol; the medium-tokamak cases keep their unprefixed names, which the existing problem names,
+  page files and documentation are built on.
+
 - **The guiding-centre Poincaré integral invariants are back**, the last family the modernization
   had left behind. `src/guiding-center-4d-poincare.jl` plus one thin module per invariant replace
   `examples/guiding_center_4d/guiding_center_4d_poincare_invariant_{1st,2nd}.jl` and the twenty-four

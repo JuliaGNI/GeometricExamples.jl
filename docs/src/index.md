@@ -103,6 +103,24 @@ alongside the energy error.
 * [Symmetric SRK3 VPRK Method](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-srk3.md)
 * [Radau IIA VPRK Methods](guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md)
 
+### Guiding Center 4d, Small Tokamak
+
+The same four orbits in the small tokamak equilibrium in cylindrical coordinates. Its particles are
+far slower — ``u \sim 8 \cdot 10^{-4}`` against the medium tokamak's ``3 \cdot 10^{-1}`` — so they
+are integrated with ``\Delta t = 800`` rather than ``2.5``, over the same 12500 steps, at which
+length the orbits still close many hundreds of times. Only the two Gauss families are run: the
+pre-0.2 gallery defined these cases but never wrote the drivers that would have run them, so there
+is no published family set to match.
+
+* [Barely Passing, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-small-barely-passing/guiding-center-4d-small-barely-passing-firk-gauss.md)
+* [Barely Passing, Gauss-Legendre VPRK Methods](guiding-center-4d-small-barely-passing/guiding-center-4d-small-barely-passing-vprk-gauss.md)
+* [Barely Trapped, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-small-barely-trapped/guiding-center-4d-small-barely-trapped-firk-gauss.md)
+* [Barely Trapped, Gauss-Legendre VPRK Methods](guiding-center-4d-small-barely-trapped/guiding-center-4d-small-barely-trapped-vprk-gauss.md)
+* [Deeply Passing, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-small-deeply-passing/guiding-center-4d-small-deeply-passing-firk-gauss.md)
+* [Deeply Passing, Gauss-Legendre VPRK Methods](guiding-center-4d-small-deeply-passing/guiding-center-4d-small-deeply-passing-vprk-gauss.md)
+* [Deeply Trapped, Gauss-Legendre Runge-Kutta Methods](guiding-center-4d-small-deeply-trapped/guiding-center-4d-small-deeply-trapped-firk-gauss.md)
+* [Deeply Trapped, Gauss-Legendre VPRK Methods](guiding-center-4d-small-deeply-trapped/guiding-center-4d-small-deeply-trapped-vprk-gauss.md)
+
 ### Guiding Center 4d (1st Poincaré Invariant)
 
 The invariant ``I_{1} = \oint_{\gamma} \vartheta_{i} (q) \, dq^{i}`` of the guiding centre one-form,

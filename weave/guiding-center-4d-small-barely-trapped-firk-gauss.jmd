@@ -1,0 +1,14 @@
+# Guiding Center 4d Small Tokamak Barely Trapped with Gauss-Legendre Runge-Kutta Methods
+
+The same orbit family as on the [medium-size tokamak](../guiding-center-4d-barely-trapped/guiding-center-4d-barely-trapped-firk-gauss.md),
+in the small tokamak equilibrium in cylindrical coordinates. Its particles are far slower —
+`u ~ 8 \cdot 10^{-4}` against the medium tokamak's `3 \cdot 10^{-1}` — so the orbit needs a time
+step three hundred times larger, `\Delta t = 800`, which is the one the pre-0.2 gallery used for it.
+Over the 12500 steps run here the orbit closes many hundreds of times.
+
+The toroidal momentum is shown alongside the energy, as the second invariant of the guiding centre
+dynamics; both are set in `src/guiding-center-4d.jl`.
+
+```julia
+run_list(odeproblem(), "Guiding Center 4d Small Tokamak Barely Trapped", tableaus_firk_gauss())
+```

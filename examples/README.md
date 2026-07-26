@@ -10,8 +10,11 @@ Migration status, family by family:
 | | |
 |---|---|
 | `lotka_volterra_2d/`, `massless_charged_particle/`, `point_vortices/`, `standard_map/` | migrated to `src/` + `weave/` |
-| `guiding_center_4d/` trajectory runs | migrated — see below |
+| `guiding_center_4d/` trajectory runs, both tokamaks | migrated — see below |
 | `guiding_center_4d/` Poincaré invariants | migrated — see below |
+| `guiding_center_4d/papers/` | not migrated: both scripts call tableau lists (`get_tableau_list_vprk_papers`, `..._vprk_lob`) that never existed in any revision, so they never ran |
+| `point_vortices/point_vortices_convergence_comparison.jl` | not migrated: `src/convergence.jl` covers the study, but per method rather than overlaying the five projections on shared axes |
+| `lotka_volterra_4d/` | empty directory |
 | `charged_particles_3d/` | not migrated, and broken before the migration too |
 
 ## guiding_center_4d — trajectory pages: **migrated**
@@ -41,6 +44,15 @@ How the pieces map:
 * **The `*_comp` variants disappear.** `guiding_center_4d_fast_*_{firk,vprk}_comp.jl` differ from
   the plain scripts only in `set_config(:tab_compensated_summation, true)`, which no longer exists,
   so they would be exact duplicates.
+* **`tokamak_slow_particles/` is migrated too**, as the four `small_*` entries of the `CASES` table
+  and the pages `weave/guiding-center-4d-small-<orbit>-<family>.jmd`. Those scripts set
+  `Δt = 800` and `ntime = 1250000` on `TokamakSmallCylindrical`, but they never ran: they read a
+  `run_id` they do not define, no `_firk`/`_vprk` wrapper was ever written for them, and no runner
+  references them. So there is no published figure set to reproduce — only the configuration, which
+  is what was carried over. At 12500 steps, the length every other case uses, the orbits still close
+  between 208 and 1239 times, so the hundredfold-longer interval those scripts asked for is not
+  needed for the figures. Only the two Gauss families are run, there being no published family set
+  to match.
 
 `ChargedParticleDynamics` is pinned to its `finish-guiding-center-3d-upgrade` branch by revision in
 `Project.toml`; that branch carries the interface changes and is not yet merged or released.

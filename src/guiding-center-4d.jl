@@ -4,50 +4,80 @@ module GuidingCenter4dExamples
     using CairoMakie
 
     using ChargedParticleDynamics
-    using ChargedParticleDynamics.GuidingCenter4d.TokamakMediumCylindrical
 
     import GeometricExamples
     using GeometricExamples
 
-    # The equilibrium is the module itself: `ElectromagneticFields.@code` injects the field into it,
-    # so `EQUILIBRIUM.R`, `.X`, `.Y`, `.Z` are its coordinate functions and `cartesian_solution`
-    # takes it as its second argument.
-    const EQUILIBRIUM = ChargedParticleDynamics.GuidingCenter4d.TokamakMediumCylindrical
+    # The two tokamak equilibria the pre-0.2 gallery ran, reached through this table rather than
+    # brought into scope with `using`: every guiding-centre submodule of ChargedParticleDynamics
+    # exports the same names — `initial_conditions_*`, `guiding_center_4d_ode`,
+    # `toroidal_momentum` — one method each, so no two of them can be `using`ed together. This is
+    # the same indirection `src/guiding-center-4d-poincare.jl` needs for its two geometries.
+    #
+    # `ElectromagneticFields.@code` injects the magnetic field into the module itself, so the module
+    # *is* the equilibrium: `equ.R`, `.X`, `.Y`, `.Z` are its coordinate functions, and
+    # `cartesian_solution` and `plot_trajectory_poloidal` take it as an argument.
+    const EQUILIBRIA = (
+        medium = ChargedParticleDynamics.GuidingCenter4d.TokamakMediumCylindrical,
+        small  = ChargedParticleDynamics.GuidingCenter4d.TokamakSmallCylindrical,
+    )
 
 
-    # Time steps and numbers of steps of the published gallery
+    # `(case, equilibrium, initial conditions, Δt, number of steps)`.
+    #
+    # The medium-tokamak time steps are those of the published gallery
     # (`examples/guiding_center_4d/tokamak_fast_particles/*.jl` before v0.2, whose comments record a
-    # per-case Δt). The published runs used ten times as many steps; as for the massless charged
-    # particle, that is more than an automated documentation build can carry across a whole
-    # projection matrix, and the orbits are already closed at this length.
+    # per-case Δt); its published runs used ten times as many steps, which is more than an automated
+    # documentation build can carry across a whole projection matrix, and the orbits are already
+    # closed at this length.
+    #
+    # The small tokamak carries slow particles — `u ~ 8E-4` against the medium tokamak's `3E-1` — so
+    # its orbits need a time step three hundred times larger. `Δt = 800` is the one
+    # `examples/guiding_center_4d/tokamak_slow_particles/*.jl` used; those scripts asked for 1.25·10⁶
+    # steps, but at 12500 the orbits are resolved many times over — between 208 and 1239 poloidal
+    # transits, depending on the case — so they are run at the same length as everything else.
+    #
+    # The medium-tokamak cases keep their unprefixed names, which the problem names, page files and
+    # documentation of the trajectory family are built on.
     const CASES = (
-        (:barely_passing, initial_conditions_barely_passing, 2.5, 12500),
-        (:barely_trapped, initial_conditions_barely_trapped, 3.0, 12500),
-        (:deeply_passing, initial_conditions_deeply_passing, 2.5, 12500),
-        (:deeply_trapped, initial_conditions_deeply_trapped, 5.0, 12500),
+        (:barely_passing,       :medium, :initial_conditions_barely_passing,   2.5, 12500),
+        (:barely_trapped,       :medium, :initial_conditions_barely_trapped,   3.0, 12500),
+        (:deeply_passing,       :medium, :initial_conditions_deeply_passing,   2.5, 12500),
+        (:deeply_trapped,       :medium, :initial_conditions_deeply_trapped,   5.0, 12500),
+        (:small_barely_passing, :small,  :initial_conditions_barely_passing, 800.0, 12500),
+        (:small_barely_trapped, :small,  :initial_conditions_barely_trapped, 800.0, 12500),
+        (:small_deeply_passing, :small,  :initial_conditions_deeply_passing, 800.0, 12500),
+        (:small_deeply_trapped, :small,  :initial_conditions_deeply_trapped, 800.0, 12500),
     )
 
     _case(name) = CASES[findfirst(c -> c[1] === name, CASES)]
+
+    "The equilibrium module a case belongs to."
+    equilibrium(case::Symbol) = EQUILIBRIA[_case(case)[2]]
+
 
     """
         iodeproblem(case; kwargs...)
         odeproblem(case; kwargs...)
 
-    The guiding centre problem of one particle case — `:barely_passing`, `:barely_trapped`,
-    `:deeply_passing` or `:deeply_trapped` — at that case's time step and number of steps.
+    The guiding centre problem of one particle case at that case's equilibrium, time step and number
+    of steps. The cases are `:barely_passing`, `:barely_trapped`, `:deeply_passing` and
+    `:deeply_trapped` on the medium-size tokamak, and the same four prefixed with `small_` on the
+    small one.
 
     `periodic = false`: the toroidal angle is periodic, and wrapping it would tear the trajectory
     figures apart. The old gallery's plot recipes unwrapped it; here the solution simply keeps
     winding.
     """
-    function iodeproblem(case::Symbol; kwargs...)
-        _, ics, Δt, nt = _case(case)
-        guiding_center_4d_iode(ics()...; tspan = (0.0, Δt * nt), tstep = Δt, periodic = false, kwargs...)
-    end
+    iodeproblem(case::Symbol; kwargs...) = _problem(:guiding_center_4d_iode, case; kwargs...)
+    odeproblem(case::Symbol; kwargs...) = _problem(:guiding_center_4d_ode, case; kwargs...)
 
-    function odeproblem(case::Symbol; kwargs...)
-        _, ics, Δt, nt = _case(case)
-        guiding_center_4d_ode(ics()...; tspan = (0.0, Δt * nt), tstep = Δt, periodic = false, kwargs...)
+    function _problem(constructor::Symbol, case::Symbol; kwargs...)
+        _, eq, ics, Δt, nt = _case(case)
+        equ = EQUILIBRIA[eq]
+        getproperty(equ, constructor)(getproperty(equ, ics)()...;
+                                      tspan = (0.0, Δt * nt), tstep = Δt,
+                                      periodic = false, kwargs...)
     end
 
 
@@ -68,41 +98,47 @@ module GuidingCenter4dExamples
 
     _component(sol, idx, i) = [sol.q[n][i] for n in idx]
 
-    "Poloidal `R`–`Z` projection of the orbit, the gallery's overview figure."
-    function plot_solution(sol, equ; nplot = 1, nt = :auto, latex = false)
+    "Poloidal `R`–`Z` projection of the orbit, over the equilibrium's flux surfaces."
+    function plot_solution(equ, sol; nplot = 1, nt = :auto, latex = false)
         idx = _indices(sol, nplot, nt)
-        plot_trajectory_poloidal(_component(sol, idx, 1), _component(sol, idx, 2), EQUILIBRIUM)[1]
+        plot_trajectory_poloidal(_component(sol, idx, 1), _component(sol, idx, 2), equ)[1]
     end
 
     # The cartesian coordinates come from `cartesian_solution` rather than from the equilibrium's
     # `X`/`Y`/`Z` directly: those take the three *spatial* coordinates, and the guiding centre state
     # carries the parallel velocity as its fourth component.
     "The orbit in cartesian 3-space."
-    function plot_phase_portrait(sol; nplot = 1, nt = :auto, latex = false)
+    function plot_phase_portrait(equ, sol; nplot = 1, nt = :auto, latex = false)
         idx = _indices(sol, nplot, nt)
-        cs = cartesian_solution(sol, EQUILIBRIUM)
+        cs = cartesian_solution(sol, equ)
         plot_trajectory_3d([cs.X[n] for n in idx], [cs.Y[n] for n in idx], [cs.Z[n] for n in idx])[1]
     end
 
     "Time traces of the four state components `R`, `Z`, `φ` and `u`."
-    function plot_traces(sol, equ; nplot = 1, nt = :auto, latex = false)
+    function plot_traces(equ, sol; nplot = 1, nt = :auto, latex = false)
         idx = _indices(sol, nplot, nt)
         ts = [sol.t[n] for n in idx]
         plot_trajectory_cylindrical(ts, (_component(sol, idx, i) for i in 1:4)...)[1]
     end
 
 
+    # The recipe bundle of one equilibrium. `run_list` calls the recipes with the *problem* as their
+    # second argument, which these adapters have no use for — the equilibrium is bound here instead,
+    # since it is a property of the case and not of the solution.
+    #
     # The toroidal momentum is the guiding centre's second invariant. The problems do not declare it
     # among their `invariants` — only the energy `:h` — so it is passed as the function itself,
     # wrapped to the `(t, q, params)` signature `compute_invariant` calls it with.
-    const TOROIDAL_MOMENTUM = (t, q, params) -> toroidal_momentum(t, q)
+    function plot_recipes(equ)
+        (solution       = (sol, _prob; kwargs...) -> plot_solution(equ, sol; kwargs...),
+         phase_portrait = (sol; kwargs...) -> plot_phase_portrait(equ, sol; kwargs...),
+         traces         = (sol, _prob; kwargs...) -> plot_traces(equ, sol; kwargs...),
+         invariants     = (((t, q, params) -> equ.toroidal_momentum(t, q),
+                            "toroidal_momentum", "Toroidal Momentum"),))
+    end
 
-    const PLOT_RECIPES = (solution       = plot_solution,
-                          phase_portrait = plot_phase_portrait,
-                          traces         = plot_traces,
-                          invariants     = ((TOROIDAL_MOMENTUM, "toroidal_momentum", "Toroidal Momentum"),))
-
-    run_list(args...; kwargs...) = GeometricExamples.run_list(PLOT_RECIPES, args...; kwargs...)
+    run_list(case::Symbol, args...; kwargs...) =
+        GeometricExamples.run_list(plot_recipes(equilibrium(case)), args...; kwargs...)
 
     export iodeproblem, odeproblem, run_list
 

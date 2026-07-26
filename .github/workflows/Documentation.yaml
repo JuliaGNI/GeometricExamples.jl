@@ -96,6 +96,14 @@ jobs:
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-gauss }
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-srk3 }
           - { problem: guiding-center-4d-deeply-trapped, page: vprk-radau }
+          - { problem: guiding-center-4d-small-barely-passing, page: firk-gauss }
+          - { problem: guiding-center-4d-small-barely-passing, page: vprk-gauss }
+          - { problem: guiding-center-4d-small-barely-trapped, page: firk-gauss }
+          - { problem: guiding-center-4d-small-barely-trapped, page: vprk-gauss }
+          - { problem: guiding-center-4d-small-deeply-passing, page: firk-gauss }
+          - { problem: guiding-center-4d-small-deeply-passing, page: vprk-gauss }
+          - { problem: guiding-center-4d-small-deeply-trapped, page: firk-gauss }
+          - { problem: guiding-center-4d-small-deeply-trapped, page: vprk-gauss }
           - { problem: guiding-center-4d-poincare-1st, page: tokamak-firk-gauss }
           - { problem: guiding-center-4d-poincare-1st, page: tokamak-vprk-gauss }
           - { problem: guiding-center-4d-poincare-1st, page: symmetric-vprk-gauss }

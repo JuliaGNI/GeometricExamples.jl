@@ -1,0 +1,15 @@
+# Guiding Center 4d Small Tokamak Barely Passing with Gauss-Legendre VPRK Methods and Projections
+
+The variational formulation of the same orbit as on the
+[Gauss-Legendre Runge-Kutta page](guiding-center-4d-small-barely-passing-firk-gauss.md), integrated with the
+Gauss-Legendre variational partitioned Runge-Kutta methods and each of the projections onto the
+constraint submanifold. The internal stage projection has no integrator in
+GeometricIntegrators 0.16 and its runs fail here, as they do on every other VPRK page.
+
+The small tokamak's particles are slow, so the time step is `\Delta t = 800` against the medium
+tokamak's `2.5`; the toroidal momentum is shown alongside the energy. Both are set in
+`src/guiding-center-4d.jl`.
+
+```julia
+run_list(iodeproblem(), "Guiding Center 4d Small Tokamak Barely Passing", tableaus_vprk_gauss())
+```

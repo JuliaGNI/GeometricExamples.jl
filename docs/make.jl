@@ -88,6 +88,26 @@ makedocs(;
             "Radau IIA VPRK Methods"              => "guiding-center-4d-deeply-trapped/guiding-center-4d-deeply-trapped-vprk-radau.md",
         ],
 
+        "Guiding Center 4d, Small Tokamak (Barely Passing)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-small-barely-passing/guiding-center-4d-small-barely-passing-firk-gauss.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-small-barely-passing/guiding-center-4d-small-barely-passing-vprk-gauss.md",
+        ],
+
+        "Guiding Center 4d, Small Tokamak (Barely Trapped)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-small-barely-trapped/guiding-center-4d-small-barely-trapped-firk-gauss.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-small-barely-trapped/guiding-center-4d-small-barely-trapped-vprk-gauss.md",
+        ],
+
+        "Guiding Center 4d, Small Tokamak (Deeply Passing)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-small-deeply-passing/guiding-center-4d-small-deeply-passing-firk-gauss.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-small-deeply-passing/guiding-center-4d-small-deeply-passing-vprk-gauss.md",
+        ],
+
+        "Guiding Center 4d, Small Tokamak (Deeply Trapped)" => [
+            "Gauss-Legendre Runge-Kutta Methods"  => "guiding-center-4d-small-deeply-trapped/guiding-center-4d-small-deeply-trapped-firk-gauss.md",
+            "Gauss-Legendre VPRK Methods"         => "guiding-center-4d-small-deeply-trapped/guiding-center-4d-small-deeply-trapped-vprk-gauss.md",
+        ],
+
         "Guiding Center 4d (1st Poincaré Invariant)" => [
             "Tokamak, Gauss-Legendre Runge-Kutta Methods" => "guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-firk-gauss.md",
             "Tokamak, Gauss-Legendre VPRK Methods"        => "guiding-center-4d-poincare-1st/guiding-center-4d-poincare-1st-tokamak-vprk-gauss.md",

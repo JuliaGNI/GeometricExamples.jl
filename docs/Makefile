@@ -18,6 +18,9 @@ GUIDING_CENTER_PAGES = firk-gauss \
                        vprk-srk3 \
                        vprk-radau
 
+SMALL_TOKAMAK_PAGES = firk-gauss \
+                      vprk-gauss
+
 POINCARE_PAGES = tokamak-firk-gauss \
                  tokamak-vprk-gauss \
                  symmetric-vprk-gauss
@@ -30,6 +33,10 @@ PROBLEMS = lotka-volterra-2d \
            guiding-center-4d-barely-trapped \
            guiding-center-4d-deeply-passing \
            guiding-center-4d-deeply-trapped \
+           guiding-center-4d-small-barely-passing \
+           guiding-center-4d-small-barely-trapped \
+           guiding-center-4d-small-deeply-passing \
+           guiding-center-4d-small-deeply-trapped \
            guiding-center-4d-poincare-1st \
            guiding-center-4d-poincare-2nd \
            standard-map
@@ -42,6 +49,10 @@ PAGES_guiding-center-4d-barely-passing = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-barely-trapped = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-deeply-passing = $(GUIDING_CENTER_PAGES)
 PAGES_guiding-center-4d-deeply-trapped = $(GUIDING_CENTER_PAGES)
+PAGES_guiding-center-4d-small-barely-passing = $(SMALL_TOKAMAK_PAGES)
+PAGES_guiding-center-4d-small-barely-trapped = $(SMALL_TOKAMAK_PAGES)
+PAGES_guiding-center-4d-small-deeply-passing = $(SMALL_TOKAMAK_PAGES)
+PAGES_guiding-center-4d-small-deeply-trapped = $(SMALL_TOKAMAK_PAGES)
 PAGES_guiding-center-4d-poincare-1st   = $(POINCARE_PAGES)
 PAGES_guiding-center-4d-poincare-2nd   = $(POINCARE_PAGES)
 PAGES_standard-map               = poincare-1st poincare-2nd
