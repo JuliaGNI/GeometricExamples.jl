@@ -10,9 +10,11 @@ module GuidingCenter4dExamples
 
     # The two tokamak equilibria the pre-0.2 gallery ran, reached through this table rather than
     # brought into scope with `using`: every guiding-centre submodule of ChargedParticleDynamics
-    # exports the same names — `initial_conditions_*`, `guiding_center_4d_ode`,
-    # `toroidal_momentum` — one method each, so no two of them can be `using`ed together. This is
-    # the same indirection `src/guiding-center-4d-poincare.jl` needs for its two geometries.
+    # exports the same names — `initial_conditions_*`, `odeproblem`, `toroidal_momentum` — one
+    # method each, so no two of them can be `using`ed together. This is the same indirection
+    # `src/guiding-center-4d-poincare.jl` needs for its two geometries. Since CPD 0.3 renamed the
+    # constructors to the `GeometricProblems` scheme those names also collide with the problem
+    # modules of `GeometricProblems` itself, which is a second reason to keep them qualified.
     #
     # `ElectromagneticFields.@code` injects the magnetic field into the module itself, so the module
     # *is* the equilibrium: `equ.R`, `.X`, `.Y`, `.Z` are its coordinate functions, and
@@ -69,14 +71,18 @@ module GuidingCenter4dExamples
     figures apart. The old gallery's plot recipes unwrapped it; here the solution simply keeps
     winding.
     """
-    iodeproblem(case::Symbol; kwargs...) = _problem(:guiding_center_4d_iode, case; kwargs...)
-    odeproblem(case::Symbol; kwargs...) = _problem(:guiding_center_4d_ode, case; kwargs...)
+    iodeproblem(case::Symbol; kwargs...) = _problem(:iodeproblem, case; kwargs...)
+    odeproblem(case::Symbol; kwargs...) = _problem(:odeproblem, case; kwargs...)
 
+    # `initial_conditions_*` returns `(q = …, params = …)`, and the constructors take that named
+    # tuple whole — the magnetic moment `μ` of the case travels in its `params`. Before CPD 0.3 the
+    # initial conditions were a bare tuple and `parameters` a positional argument, so this was a
+    # splat.
     function _problem(constructor::Symbol, case::Symbol; kwargs...)
         _, eq, ics, Δt, nt = _case(case)
         equ = EQUILIBRIA[eq]
-        getproperty(equ, constructor)(getproperty(equ, ics)()...;
-                                      tspan = (0.0, Δt * nt), tstep = Δt,
+        getproperty(equ, constructor)(getproperty(equ, ics)();
+                                      timespan = (0.0, Δt * nt), timestep = Δt,
                                       periodic = false, kwargs...)
     end
 

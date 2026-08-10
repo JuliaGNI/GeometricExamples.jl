@@ -19,17 +19,17 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
 CairoMakie = "0.15"
-# 0.2 carries what the guiding-centre examples need: the update to GeometricEquations 0.21 /
-# GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface
-# invariants, and the `ChargedParticlePlots` Makie extension. Until it was registered this was a
-# `[sources]` pin on the branch carrying them, which is also what forced a Julia 1.11 floor.
-ChargedParticleDynamics = "0.2"
+# 0.4 renamed every problem constructor of the guiding-centre modules to the `GeometricProblems`
+# scheme and their `tspan`/`tstep` keywords to `timespan`/`timestep`, with no deprecation shims, and
+# brings `ElectromagneticFields` 0.8 with it — which through 0.7.0 corrects the orientation of `B`
+# in the cylindrical charts both tokamak equilibria here are built on. See `docs/src/index.md`.
+ChargedParticleDynamics = "0.4"
 Documenter = "1"
-GeometricIntegrators = "0.16"
-GeometricIntegratorsBase = "0.4"
-GeometricProblems = "0.7.3"
+GeometricIntegrators = "0.17"
+GeometricIntegratorsBase = "0.5"
+GeometricProblems = "0.8"
 PoincareInvariants = "0.5"
-SimpleSolvers = "0.9"
+SimpleSolvers = "0.10"
 Weave = "0.10"
 julia = "1.10"
 

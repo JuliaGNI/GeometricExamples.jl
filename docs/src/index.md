@@ -148,19 +148,31 @@ two-form, on an advected surface sampled at Padua points.
 
 ## Known Gaps
 
-This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.16 /
-GeometricProblems 0.7 / PoincareInvariants 0.5 / CairoMakie 0.15. A few things it used to cover
-have no counterpart in the current stack and are recorded here rather than quietly dropped.
+This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.17 /
+GeometricProblems 0.8 / ChargedParticleDynamics 0.4 / PoincareInvariants 0.5 / CairoMakie 0.15. A
+few things it used to cover have no counterpart in the current stack and are recorded here rather
+than quietly dropped.
 
-* **The guiding-centre problems will need updating again.**
-  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) 0.2.0 —
-  which carries the interface changes the orbits and invariants above need, the update to
-  GeometricEquations 0.21 / GeometricSolutions 0.6, the PoincareInvariants 0.5 rewrite of the 4d
-  loop and surface invariants, and the `ChargedParticlePlots` Makie extension — is a plain
-  dependency again, but its `TODO.md` records a further breaking rename of exactly the constructors
-  and keywords used here (`guiding_center_4d_ode` → `odeproblem`, `tspan`/`tstep` →
-  `timespan`/`timestep`). That will arrive as 0.3 and the call sites in
-  `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` will have to follow.
+* **The guiding-centre orbits changed direction.**
+  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) 0.4
+  requires [ElectromagneticFields.jl](https://github.com/JuliaPlasma/ElectromagneticFields.jl) 0.8,
+  whose 0.7.0 release corrected an orientation error in the Hodge star: the volume element was
+  taken unsigned, which reversed ``B`` in the four left-handed charts. Both equilibria used here —
+  the medium and small tokamaks in cylindrical ``(R, Z, \varphi)`` coordinates — are among them, so
+  every trajectory and Poincaré page built on them shows a different orbit than the pre-0.4 gallery
+  did. The models are exactly equivariant under the change, since ``\vartheta = A + u b`` and
+  ``H = \tfrac{1}{2} u^{2} + \mu |B| + \varphi`` are both invariant under ``b \to -b`` together with
+  ``u \to -u``: the old dynamics at parallel velocity ``u`` *is* the new dynamics at ``-u``. The
+  cartesian `SymmetricField` of the Poincaré pages is unaffected and its figures are unchanged.
+
+  Two further consequences reach the small tokamak. Its `GuidingCenter4d` module carried a
+  hand-rolled sign compensation on ``u_{i}`` for the reversed field, which 0.4 removes, so its four
+  cases again start the same physical particle as the medium tokamak's. And the constructors these
+  pages call were renamed in 0.3 to the `GeometricProblems` scheme with no deprecation shims —
+  `guiding_center_4d_ode` → `odeproblem`, `guiding_center_4d_loop_ode` → `loop_odeproblem`,
+  `tspan`/`tstep` → `timespan`/`timestep`, and `initial_conditions_*` now returning a named tuple
+  the constructors take whole. `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl`
+  follow that scheme.
 * **The 3d charged particle** is not rebuilt. It was already broken before the modernization: its
   pre-0.2 scripts `include` settings and driver files that do not exist in their directory, so they
   cannot have run, and what was intended is not recoverable from them. Those scripts have since been
@@ -178,11 +190,11 @@ have no counterpart in the current stack and are recorded here rather than quiet
   GeometricIntegrators 0.16, so the point-vortex runs on `lodeproblem_formal_lagrangian` have no
   counterpart. The method list in `src/tableau_lists.jl` records this.
 * **Internal-stage projection.** `VPRKpInternal` still constructs, but the
-  `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.16 — only the
+  `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.17 — only the
   standard, symmetric and midpoint projections do. Its runs are listed on the VPRK pages and fail
   immediately there, which is what a missing integrator looks like.
 * **HDF5 output.** `Simulation`/`run!` and the HDF5 writing they did are commented out in
-  GeometricIntegrators 0.16. The pages produce figures only; no solution files are written.
+  GeometricIntegrators 0.17. The pages produce figures only; no solution files are written.
 * **Compensated summation.** `set_config(:tab_compensated_summation, …)` no longer exists, so the
   `*_comp` variants of the guiding-centre scripts would now duplicate the plain ones.
 * **Splitting methods.** A splitting method needs an `sodeproblem`, which none of the problems

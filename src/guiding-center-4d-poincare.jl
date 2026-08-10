@@ -15,10 +15,9 @@ module GuidingCenter4dPoincareExamples
 
     # The two equilibria the pre-0.2 gallery computed the invariants on. Unlike
     # `src/guiding-center-4d.jl`, which needs only one of them, this module cannot `using` the
-    # submodules: they export the *same* names (`guiding_center_4d_loop_ode`,
-    # `guiding_center_4d_poincare_invariant_1st`, …), one method each, closing over that
-    # equilibrium's loop, surface and magnetic moment. Everything below therefore reaches them
-    # through this table, module-qualified.
+    # submodules: they export the *same* names (`loop_odeproblem`, `poincare_invariant_1st`, …),
+    # one method each, closing over that equilibrium's loop, surface and magnetic moment.
+    # Everything below therefore reaches them through this table, module-qualified.
     #
     # `TokamakMediumCylindrical` is the pre-0.2 `TokamakFastLoop`/`TokamakFastSurface` — the
     # medium-size tokamak in cylindrical coordinates, loop and surface centred on
@@ -136,18 +135,18 @@ module GuidingCenter4dPoincareExamples
     const SPECS = (
         first = (stem      = "poincare_1st",
                  npoints   = NLOOP,
-                 invariant = (m, N) -> m.guiding_center_4d_poincare_invariant_1st(N),
-                 ode       = (m; kwargs...) -> m.guiding_center_4d_loop_ode(; kwargs...),
-                 iode      = (m; kwargs...) -> m.guiding_center_4d_loop_iode(; kwargs...),
-                 ensemble  = (m, prob, pinv) -> m.guiding_center_4d_loop_ensemble(prob, pinv),
+                 invariant = (m, N) -> m.poincare_invariant_1st(N),
+                 ode       = (m; kwargs...) -> m.loop_odeproblem(; kwargs...),
+                 iode      = (m; kwargs...) -> m.loop_iodeproblem(; kwargs...),
+                 ensemble  = (m, prob, pinv) -> m.loop_ensemble(prob, pinv),
                  figures   = _loop_figures),
 
         second = (stem      = "poincare_2nd",
                   npoints   = NSURFACE,
-                  invariant = (m, N) -> m.guiding_center_4d_poincare_invariant_2nd(N),
-                  ode       = (m; kwargs...) -> m.guiding_center_4d_surface_ode(; kwargs...),
-                  iode      = (m; kwargs...) -> m.guiding_center_4d_surface_iode(; kwargs...),
-                  ensemble  = (m, prob, pinv) -> m.guiding_center_4d_surface_ensemble(prob, pinv),
+                  invariant = (m, N) -> m.poincare_invariant_2nd(N),
+                  ode       = (m; kwargs...) -> m.surface_odeproblem(; kwargs...),
+                  iode      = (m; kwargs...) -> m.surface_iodeproblem(; kwargs...),
+                  ensemble  = (m, prob, pinv) -> m.surface_ensemble(prob, pinv),
                   figures   = _surface_figures),
     )
 
@@ -159,8 +158,7 @@ module GuidingCenter4dPoincareExamples
     The base problem of the `kind` (`:first` or `:second`) invariant on `geometry` (`:tokamak` or
     `:symmetric`), whose flow advects the loop or the surface. Its initial condition is a
     placeholder that the ensemble builder replaces with the sampled points, so only the time span
-    and time step need to be passed. `ChargedParticleDynamics` still names those `tspan` and
-    `tstep`, not `timespan` and `timestep`.
+    and time step need to be passed.
 
     The explicit form pairs with the fully implicit Runge-Kutta methods, the variational one with
     the projected VPRK methods, exactly as on the trajectory pages.
@@ -174,7 +172,7 @@ module GuidingCenter4dPoincareExamples
 
     # Integrate one ensemble, reporting a failure on the page instead of propagating it. Building
     # the integrator happens inside `integrate`, so this covers the methods that have no integrator
-    # in GeometricIntegrators 0.16 — the internal stage projection listed on every VPRK page — as
+    # in GeometricIntegrators 0.17 — the internal stage projection listed on every VPRK page — as
     # well as a diverging run. `GeometricExamples.integrate_partial`, which the trajectory pages use
     # for the same purpose, is not applicable: it steps a single `GeometricSolution` by hand.
     function _integrate_ensemble(ensemble, method, label)
@@ -234,7 +232,7 @@ module GuidingCenter4dPoincareExamples
             params = nothing
 
             for Δt in TIMESTEPS
-                prob = problem(geometry; tspan = (0.0, TIMESPAN_END), tstep = Δt)
+                prob = problem(geometry; timespan = (0.0, TIMESPAN_END), timestep = Δt)
                 sol = _integrate_ensemble(spec.ensemble(equ, prob, pinv), method, "Δt = $(Δt)")
                 sol === nothing && continue
                 push!(sweep, "Δt = $(Δt)" => sol)

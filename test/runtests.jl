@@ -68,8 +68,8 @@ include("../src/guiding-center-4d.jl")
 @testset "Guiding Center 4d" begin
     @testset "$(case)" for (case, _, _, Δt, _) in GuidingCenter4dExamples.CASES
         # `similar` keeps the case's own time step and shortens the interval to a single step.
-        ode = GuidingCenter4dExamples.odeproblem(case; tspan = (0.0, Δt))
-        iode = GuidingCenter4dExamples.iodeproblem(case; tspan = (0.0, Δt))
+        ode = GuidingCenter4dExamples.odeproblem(case; timespan = (0.0, Δt))
+        iode = GuidingCenter4dExamples.iodeproblem(case; timespan = (0.0, Δt))
 
         @testset "$(family)" for (family, list) in tableaus_ode
             @testset "$(run[2])" for run in list
@@ -93,7 +93,7 @@ include("../src/guiding-center-4d.jl")
         using CairoMakie: Figure
         Δt = GuidingCenter4dExamples._case(case)[4]
         equ = GuidingCenter4dExamples.equilibrium(case)
-        sol = integrate(GuidingCenter4dExamples.iodeproblem(case; tspan = (0.0, 20 * Δt)),
+        sol = integrate(GuidingCenter4dExamples.iodeproblem(case; timespan = (0.0, 20 * Δt)),
                         VPRKGauss(2))
 
         @test GuidingCenter4dExamples.plot_solution(equ, sol; latex = false) isa Figure
@@ -126,7 +126,7 @@ const GCP = GuidingCenter4dPoincareExamples
 
 @testset "Guiding Center 4d Poincaré Invariants" begin
     Δt = 2.5
-    tspan = (0.0, 4Δt)
+    timespan = (0.0, 4Δt)
 
     # The loop takes any number of sample points; 45 = 9·10/2 is a Padua number, which is what the
     # surface's Chebyshev plan rounds its point count up to.
@@ -145,7 +145,7 @@ const GCP = GuidingCenter4dPoincareExamples
         @testset "$(nameof(typeof(method)))" for (problem, method) in
                 ((GCP.odeproblem, Gauss(2)), (GCP.iodeproblem, VPRKpSymmetric(VPRKGauss(2))))
 
-            prob = problem(kind, geometry; tspan = tspan, tstep = Δt)
+            prob = problem(kind, geometry; timespan = timespan, timestep = Δt)
             sol = integrate(spec.ensemble(equ, prob, pinv), method)
             I = compute!(pinv, sol, parameters(prob))
 
@@ -167,7 +167,7 @@ const GCP = GuidingCenter4dPoincareExamples
         equ = GCP.GEOMETRIES[geometry]
 
         pinv = spec.invariant(equ, npoints(kind))
-        prob = GCP.odeproblem(kind, geometry; tspan = tspan, tstep = Δt)
+        prob = GCP.odeproblem(kind, geometry; timespan = timespan, timestep = Δt)
         sol = integrate(spec.ensemble(equ, prob, pinv), Gauss(2))
 
         ts, X, Y, Z = GCP._cartesian_slices(sol, equ)
