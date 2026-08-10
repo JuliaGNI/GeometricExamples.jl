@@ -79,7 +79,8 @@ particle, which was already broken before the modernization. The pre-0.2 scripts
 removed; the `[Unreleased]` section of [`CHANGELOG.md`](CHANGELOG.md) records how they map onto the
 current structure, which of them never ran, and the one study that did not come across, and the git
 history holds the originals. The *Known Gaps* section of the documentation covers the integrators,
-outputs and run lengths that the modernization to GeometricIntegrators 0.16 left behind.
+outputs and run lengths that the modernization left behind, and [`TODO.md`](TODO.md) the families
+the current stack could carry again but that are not built yet.
 
 ## References
 

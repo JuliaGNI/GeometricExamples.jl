@@ -186,9 +186,11 @@ than quietly dropped.
   variant `plot_poincare_invariant_error(t, I, K, Δt)` of the `ChargedParticlePlots` extension is
   unused for the same reason: the trapezoidal second-invariant variants that produced its `K` were
   removed in the PoincareInvariants 0.5 rewrite.
-* **Formal Lagrangian Runge-Kutta methods.** `IntegratorFLRK` is commented out in
-  GeometricIntegrators 0.16, so the point-vortex runs on `lodeproblem_formal_lagrangian` have no
-  counterpart. The method list in `src/tableau_lists.jl` records this.
+* **Formal Lagrangian Runge-Kutta methods.** Not a gap any more, and tracked as work instead:
+  `FLRK` was reinstated in GeometricIntegrators 0.16.8 and is a fully integrable method again, so
+  the obstacle this entry used to record — the integrator being commented out — is gone. The
+  point-vortex runs on `lodeproblem_formal_lagrangian` have simply not been rebuilt, which needs a
+  method list, a page and a weave document of their own. See `TODO.md`.
 * **Internal-stage projection.** `VPRKpInternal` still constructs, but the
   `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.17 — only the
   standard, symmetric and midpoint projections do. Its runs are listed on the VPRK pages and fail
