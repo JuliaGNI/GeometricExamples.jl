@@ -61,6 +61,11 @@ const PLOT_THEME = Theme(
 # runs and nothing on the rest, with identical step counts and failure modes across the gallery.
 const SOLVER_OPTIONS = (f_abstol = 1E-14, f_reltol = 1E-14, max_iterations = 100)
 
+# What every integrator here is actually built with: the tolerances above, plus the current
+# `SOLVER_VERBOSITY` (see below). A function rather than a second constant, because the verbosity
+# is settable and a `const` named tuple would freeze it at load time.
+solver_options() = (SOLVER_OPTIONS..., verbosity = SOLVER_VERBOSITY[])
+
 
 # Upper bound on the number of points drawn per curve. The runs here go up to 10⁵ time steps, and
 # rendering a vector line of that many points is what dominates the cost of a page — a run of the
@@ -80,15 +85,19 @@ _linebreak(io) = show(io, "text/markdown", MD(Paragraph([LineBreak()])))
 # Several of the method families in this gallery diverge on some of the problems — the
 # non-symplectic Lobatto VPRK methods on the degenerate Lotka-Volterra Lagrangian in
 # particular. The Newton solver then fails its line search in every iteration of every time
-# step and `SimpleSolvers` emits one warning per failure: in the SPARK companion package this
-# drowned a CI run in 173000 of them, 99% of a 174583-line log. The warning cannot be switched
-# off through the solver interface — `NewtonSolver` builds its `Linesearch` without forwarding
-# the option keywords, so the line search always ends up with a default `Options` and
-# `verbosity = 1` — hence we filter it out on the logging side instead, and likewise the
-# equally repetitive tick warnings from the plotting stack. Only the count is reported, by
-# `run_list`.
-const QUIET_LOG_MODULES = (:SimpleSolvers, :PlotUtils, :Makie)
+# step; in the SPARK companion package that once drowned a CI run in 173000 warnings, 99% of a
+# 174583-line log. They are turned off at the source through `SOLVER_VERBOSITY`, which
+# `SimpleSolvers` shares with its line search. The plotting stack offers no such switch:
+# `PlotUtils` emits one unthrottled `No strict ticks found` per degenerate axis, so its warnings
+# are dropped on the logging side instead and only their count is reported, by `run_list`.
+const QUIET_LOG_MODULES = (:PlotUtils, :Makie)
 const QUIET_LOG_COUNT = Ref(0)
+
+# Solver verbosity, folded into the option set by `solver_options` above;
+# `quiet_solver_warnings!` drops it to 0 for the weave builds. Interactive sessions keep the
+# default, where the warnings are worth having: `SimpleSolvers` rate-limits them to a handful per
+# session.
+const SOLVER_VERBOSITY = Ref(1)
 
 struct QuietLogger{L<:AbstractLogger} <: AbstractLogger
     parent::L
@@ -107,9 +116,12 @@ Logging.catch_exceptions(logger::QuietLogger) = Logging.catch_exceptions(logger.
 Logging.handle_message(logger::QuietLogger, args...; kwargs...) =
     Logging.handle_message(logger.parent, args...; kwargs...)
 
-# Install the filter. Called by the weave driver, not on load, so that interactive sessions
-# keep the warnings unless they ask for quiet.
-quiet_solver_warnings!() = global_logger(QuietLogger(global_logger()))
+# Turn off the solver warnings and install the filter for the plotting ones. Called by the weave
+# driver, not on load, so that interactive sessions keep the warnings unless they ask for quiet.
+function quiet_solver_warnings!()
+    SOLVER_VERBOSITY[] = 0
+    global_logger(QuietLogger(global_logger()))
+end
 
 
 # Integrate a problem step-by-step so that a crash (solver failure, singular matrix, NaNs, …)
@@ -121,7 +133,7 @@ quiet_solver_warnings!() = global_logger(QuietLogger(global_logger()))
 #
 # This replaces the old gallery's `Simulation`/`run!` pair, which no longer exists, and its
 # habit of wrapping every plot call in a `try`/`catch` to survive a crashed run.
-function integrate_partial(problem, method; options = SOLVER_OPTIONS)
+function integrate_partial(problem, method; options = solver_options())
     sol = GIB.Solution(problem)
     nt  = GIB.ntime(sol)
 
@@ -129,7 +141,7 @@ function integrate_partial(problem, method; options = SOLVER_OPTIONS)
     err = nothing
 
     # Building the integrator is inside the `try` as well: some of the methods this gallery lists
-    # have no integrator in GeometricIntegrators 0.16 (see `PROJECTIONS` in tableau_lists.jl), and
+    # have no integrator in GeometricIntegrators 0.17 (see `PROJECTIONS` in tableau_lists.jl), and
     # such a method must fail like a diverging run rather than abort the whole page.
     try
         int     = GIB.GeometricIntegrator(problem, method; options...)
@@ -463,7 +475,7 @@ function run_list(recipes, problem, name, list, plot_dir = PLOT_DIR; fig_suff = 
     end
 
     if QUIET_LOG_COUNT[] > 0
-        @info("Suppressed $(QUIET_LOG_COUNT[]) solver/plotting warnings so far (see QUIET_LOG_MODULES)")
+        @info("Suppressed $(QUIET_LOG_COUNT[]) plotting warnings so far (see QUIET_LOG_MODULES)")
     end
 
     nothing

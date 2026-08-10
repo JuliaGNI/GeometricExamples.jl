@@ -9,7 +9,7 @@ module GuidingCenter4dPoincareExamples
     using Markdown
 
     import GeometricExamples
-    using GeometricExamples: PLOT_DIR, SOLVER_OPTIONS, QUIET_LOG_COUNT,
+    using GeometricExamples: PLOT_DIR, solver_options, QUIET_LOG_COUNT,
                              _failure_message, _headline, _linebreak, _save_plot, _write_page
 
 
@@ -177,7 +177,7 @@ module GuidingCenter4dPoincareExamples
     # for the same purpose, is not applicable: it steps a single `GeometricSolution` by hand.
     function _integrate_ensemble(ensemble, method, label)
         try
-            integrate(ensemble, method; SOLVER_OPTIONS...)
+            integrate(ensemble, method; solver_options()...)
         catch ex
             show(stdout, "text/markdown",
                  Markdown.parse("**$(label) failed: $(_failure_message(ex)).**"))
@@ -269,7 +269,7 @@ module GuidingCenter4dPoincareExamples
         end
 
         if QUIET_LOG_COUNT[] > 0
-            @info("Suppressed $(QUIET_LOG_COUNT[]) solver/plotting warnings so far (see QUIET_LOG_MODULES)")
+            @info("Suppressed $(QUIET_LOG_COUNT[]) plotting warnings so far (see QUIET_LOG_MODULES)")
         end
 
         nothing
