@@ -59,6 +59,18 @@ const PLOT_THEME = Theme(
 # `‖ϑ‖ ≈ 0.985`, a floor of 2.2E-16, and the solver converges in two Newton iterations without any
 # of 4000 solves reaching the cap; adopting CPD's setting was measured at ~20% on the projected VPRK
 # runs and nothing on the rest, with identical step counts and failure modes across the gallery.
+#
+# `max_iterations = 100` stays, and here the gallery deliberately parts company with the three
+# companion packages, which dropped it when SimpleSolvers 0.10 added its `max_stalls = 2` stagnation
+# detector. That detector only fires on a solve whose iterate stops *moving*; one that keeps moving
+# without converging is still bounded by nothing but `max_iterations`, whose default is 1000. This
+# gallery has such solves and they are expensive. Measured over every page it builds, at 1000 time
+# steps per run: 96 s with the cap against 297 s without it, almost all of the difference in four
+# point-vortex runs that complete either way — `vprk_lobatto_IIIB{3,4}_p{symmetric,midpoint}` go
+# from 3.5–5.1 s to 43–62 s each. Four further point-vortex runs lose their trajectory entirely,
+# `vprk_lobatto_IIIA{3,4}_p{symmetric,midpoint}` falling from 20–36 completed steps to none, because
+# the stagnation detector retires them before the cap would have. Do not "align with the companion
+# packages" here: this is the one problem set where the cap is doing work.
 const SOLVER_OPTIONS = (f_abstol = 1E-14, f_reltol = 1E-14, max_iterations = 100)
 
 # What every integrator here is actually built with: the tolerances above, plus the current
