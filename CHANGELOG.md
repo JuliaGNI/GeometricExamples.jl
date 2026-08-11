@@ -90,7 +90,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   needs no second grid object — `plot_poincare_surface` scatters its points instead of reshaping
   them, so the accurate Chebyshev invariant serves both the number and the figure.
 
+- **`TODO.md`**, for what the current stack would carry if someone wrote the pages, as against the
+  *Known Gaps* section of the documentation, which is for what it makes impossible. It opens with
+  the formal Lagrangian Runge-Kutta methods; see *Changed* below.
+
 ### Changed
+
+- **The dependency stack moves to ChargedParticleDynamics 0.4, ElectromagneticFields 0.8,
+  GeometricIntegrators 0.17, GeometricIntegratorsBase 0.5, GeometricProblems 0.8 and SimpleSolvers
+  0.10.** EulerLagrange 0.5 arrives transitively through GeometricProblems and ElectromagneticFields
+  through ChargedParticleDynamics, so neither takes a `[compat]` entry of its own.
+
+  **This is not value-preserving, and the guiding-centre orbits are the reason.**
+  ElectromagneticFields 0.7.0 corrected an orientation error in the Hodge star, which had been handed
+  the unsigned volume element `|det DF|`, so `B` was reversed in the four left-handed charts. Both
+  equilibria this gallery uses — the medium and small tokamaks in cylindrical `(R, Z, φ)` coordinates
+  — are built on one of them, so every trajectory and Poincaré page over them shows a different orbit
+  than the pages published from 0.2. The models are exactly equivariant under the change: `ϑ = A + u b`
+  and `H = ½u² + μ|B| + φ` are both invariant under `b → -b` together with `u → -u`, so the old
+  dynamics at parallel velocity `u` *is* the new dynamics at `-u`. Everything cartesian is untouched,
+  including the `SymmetricField` of the Poincaré pages. ChargedParticleDynamics 0.4 additionally drops
+  a hand-rolled sign compensation on `uᵢ` in the small tokamak's `GuidingCenter4d` modules, which had
+  been correcting for the reversed field, so those four cases again start the same physical particle
+  as the medium tokamak's.
+
+  The solver half of the stack changed no interface this gallery uses. ChargedParticleDynamics 0.3
+  changed a great many, renaming every problem constructor to the `GeometricProblems` scheme with no
+  deprecation shims:
+
+  | Was | Is |
+  |---|---|
+  | `guiding_center_4d_{ode,iode}` | `{ode,iode}problem` |
+  | `guiding_center_4d_{loop,surface}_{ode,iode}` | `{loop,surface}_{ode,iode}problem` |
+  | `guiding_center_4d_{loop,surface}_ensemble` | `{loop,surface}_ensemble` |
+  | `guiding_center_4d_poincare_invariant_{1st,2nd}` | `poincare_invariant_{1st,2nd}` |
+  | `tspan` / `tstep` | `timespan` / `timestep` |
+
+  One change there is not a rename: `initial_conditions_*` now returns the named tuple
+  `(q = …, params = …)` and `parameters` is a keyword, so `_problem` in `src/guiding-center-4d.jl`
+  passes that tuple whole where it used to splat it into two positional arguments. The renames also
+  make the equilibrium submodules collide with the problem modules of `GeometricProblems` itself; the
+  `EQUILIBRIA` and `GEOMETRIES` tables were already there because the submodules collide with each
+  other, and are now doubly necessary.
+
+  Re-verified against 0.17 and still true: `VPRKpInternal` builds an `InternalStageProjection` that
+  has no integrator, and `Simulations`/HDF5 output is still commented out upstream.
+
+- **Solver warnings are silenced through the solver rather than the logger.** SimpleSolvers 0.10
+  builds a line search with its solver's `Options`, so `verbosity = 0` finally reaches the
+  per-iteration line-search warnings that made up almost all of a weave log; `quiet_solver_warnings!`
+  now drops `SOLVER_VERBOSITY` to 0 and `:SimpleSolvers` leaves `QUIET_LOG_MODULES`. The
+  `QuietLogger` stays for the plotting stack, whose `No strict ticks found` has neither a verbosity
+  switch nor a `maxlog`. Since the verbosity is settable it cannot live in the `const SOLVER_OPTIONS`
+  tuple; `solver_options()` folds the two together and is what `integrate_partial` and the Poincaré
+  ensemble runs build their integrators with.
+
+- **`max_iterations = 100` stays, where the three publication companion packages dropped theirs.**
+  SimpleSolvers 0.10's `max_stalls = 2` retires a solve after two steps that leave the iterate
+  unmoved, which made the cap redundant in those packages. It is not redundant here: `max_stalls`
+  never fires on a solve whose iterate keeps *moving* without converging, and that solve is then
+  bounded by nothing but `max_iterations`, whose default is 1000. Measured over every page this
+  gallery builds, at 1000 time steps per run, the cap is worth **96 s against 297 s**. Almost all of
+  the difference is four point-vortex runs that complete their thousand steps either way —
+  `vprk_lobatto_IIIB{3,4}_p{symmetric,midpoint}`, 3.5–5.1 s each with the cap and 43–62 s without —
+  and the same shape appears at about six-fold wherever a run sits near its residual floor. Dropping
+  it would also cost figures rather than gain them: `vprk_lobatto_IIIA{3,4}_p{symmetric,midpoint}` on
+  the point vortices fall from 20–36 completed steps to none, the stagnation detector retiring them
+  before the cap would have. The comment above `SOLVER_OPTIONS` records this, since the shared value
+  is exactly what invites someone to align the four packages again.
+
+- **The formal Lagrangian Runge-Kutta methods are work rather than a gap.** `FLRK` was commented out
+  of GeometricIntegrators when this gallery was modernized, which is why the point-vortex runs on
+  `lodeproblem_formal_lagrangian` were dropped. It came back in **0.16.8**, before this update, so the
+  *Known Gaps* entry claiming it unavailable had already been stale at the 0.16.9 the gallery
+  resolved — as had its claim that `src/tableau_lists.jl` recorded the gap, which no revision ever
+  did. The family is now tracked in `TODO.md`.
 
 - **The massless charged particle runs 10⁴ time steps instead of 10⁵, and has no Lobatto VPRK
   page.** This workflow had never run before this release, so the cost of its pages had never been
@@ -115,10 +189,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   list of figures, which is what both the standard map's and the guiding centre's invariant pages
   need; `write_plots`, with its fixed trajectory section skeleton, is not applicable to either.
 
-- **`ChargedParticleDynamics` is a dependency again**, at `compat = "0.2"`. 0.2.0 carries the
+- **`ChargedParticleDynamics` is a dependency again.** 0.2.0 was the release that carried the
   interface changes the examples need — the update to GeometricEquations 0.21 /
   GeometricSolutions 0.6, the `PoincareInvariants` 0.5 rewrite of the 4d loop and surface
-  invariants, and the `ChargedParticlePlots` Makie extension.
+  invariants, and the `ChargedParticlePlots` Makie extension. The bound has since moved on to
+  `"0.4"`; see the stack entry at the top of this section.
 
   For most of this release cycle it was a `[sources]` pin on the branch carrying those changes,
   which had two consequences now undone. It forced a **Julia 1.11 floor**, since `[sources]` is a
@@ -176,6 +251,11 @@ three error curves each published Poincaré invariant run drew, only the invaria
 survives: `PoincareInvariants` 0.5 computes one invariant from the form it is handed, and a projected
 solution no longer carries the `λ` series the third one needed. See the *Known Gaps* section of the
 documentation.
+
+**No documentation build has been run since the move to ChargedParticleDynamics 0.4.** The test
+suite covers the renamed constructors and the plot adapters — 2902 assertions, all passing — but
+every guiding-centre figure will be redrawn with the corrected field orientation, and nothing has
+looked at the result yet.
 
 
 ## [0.2.0] - 2026-07-25
