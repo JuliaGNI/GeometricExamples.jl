@@ -35,7 +35,7 @@ const GAUSS_STAGES = (1, 2, 3, 4, 5, 6)
 # `pnone` is the unprojected method itself.
 #
 # `VPRKpInternal` is listed because the gallery has always compared it, but the
-# `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.17 — only the
+# `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.18 — only the
 # standard, symmetric and midpoint projections do (`src/projections/`). Its runs therefore fail
 # immediately and are reported as such on the woven pages, rather than being silently dropped;
 # see the "Known gaps" section of the documentation.

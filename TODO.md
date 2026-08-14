@@ -11,7 +11,7 @@ everything here is possible now and simply unbuilt.
 
 `FLRK` was commented out of GeometricIntegrators when this gallery was modernized, which is why the
 family was dropped. It came back in **0.16.8** — before the update to 0.17, so the *Known Gaps*
-entry claiming it was unavailable had already been stale for a while — and is a full
+entry claiming it was unavailable had already been stale for a while — and is still, on 0.18, a full
 `LODEMethod` again, `FLRK(tableau)` or `FLRK(method::RKMethod)`, with its own integrator and cache
 (`src/integrators/rk/integrators_flrk.jl` upstream). Nothing blocks the family any longer.
 

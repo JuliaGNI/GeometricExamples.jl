@@ -208,6 +208,9 @@ include("../src/standard-map.jl")
 
     # SymplecticEulerA with unit time step *is* the standard map, so check that identity here: it
     # is the one assumption of the whole example that is neither GeometricIntegrators' nor ours.
+    # Since GeometricIntegrators 0.18 the name resolves to GeometricIntegratorsBase's explicit
+    # method for separable Hamiltonians rather than to the partitioned Runge-Kutta one, now
+    # `SymplecticEulerARK`; this assertion is what says the substitution kept the map intact.
     sol = integrate(prob, SymplecticEulerA())
     θ, p = 0.0, 0.0
     for n in 1:5

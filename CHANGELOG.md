@@ -8,6 +8,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **The solver stack moves to GeometricIntegrators 0.18, GeometricIntegratorsBase 0.6 and
+  SimpleSolvers 0.11.** The three bounds move together: 0.18 requires GeometricIntegratorsBase 0.6,
+  which requires SimpleSolvers 0.11. RungeKutta 0.6, QuadratureRules 0.2 and CompactBasisFunctions
+  0.3 arrive transitively and take no `[compat]` entry of their own. ChargedParticleDynamics,
+  GeometricProblems, PoincareInvariants and CairoMakie are unchanged.
+
+  **Every step count and every trajectory in this gallery is unchanged.** The one visible
+  difference is a failure message: SimpleSolvers 0.11 rejects any non-finite search direction where
+  0.10.1 tested only for `NaN`, so `vprk_lobatto_IIIA4_p{symmetric,midpoint}` on the point vortices
+  — which still stop after 23 steps — now report *solver error – non-finite direction vector*
+  instead of *solver error – NaN detected in direction vector*. (The same fix is not cosmetic
+  everywhere: in the SPARK companion package it takes eleven runs that used to crash all the way
+  to the end of their interval.)
+
+- **`SymplecticEulerA` is now GeometricIntegratorsBase's method, not the Runge-Kutta one.**
+  GeometricIntegratorsBase 0.5.2 added explicit symplectic Euler A/B, implicit midpoint and
+  Crank-Nicolson integrators, so GeometricIntegrators 0.18 suffixed its four colliding Runge-Kutta
+  methods — `SymplecticEulerA` → `SymplecticEulerARK`, and likewise `SymplecticEulerB`,
+  `ImplicitMidpoint` and `CrankNicolson`. `src/standard-map.jl` is the only place in this gallery
+  that uses any of them, and it keeps the unsuffixed name deliberately: the new method assumes a
+  separable Hamiltonian, which the standard map is, and under that assumption takes the same two
+  substeps in the same order without a nonlinear solve at all. The map is identical, and
+  `test/runtests.jl` pins it against the closed form.
+
+- **`max_iterations = 100` stays, again.** GeometricIntegratorsBase 0.6 added `f_stall_window = 50`
+  to its `default_options` — retire a solve that spends fifty iterations without halving its
+  residual — which is precisely the case this gallery keeps the cap for. Measured on 0.18/0.6.2, it
+  does not replace it. For a *projected* method the option never reaches the solver at all, because
+  GeometricIntegrators' projection path still replaces the defaults with the caller's options
+  rather than merging them (`src/projections/projection.jl:51`); the nine point-vortex runs the cap
+  is about take 21 s with it and 248 s without, at either setting of `f_stall_window`, with
+  identical step counts. For an *unprojected* method it does reach the solver, and changes nothing:
+  over 132 combinations — the Lobatto IIIA–IIIG, Gauss and Radau VPRK families against the point
+  vortices, both Lotka-Volterra gauges and the massless charged particle — not one step count or
+  failure mode differs between `f_stall_window = 50` and `0`. The comment above `SOLVER_OPTIONS`
+  records this alongside the earlier measurement.
+
 ### Added
 
 - **The four guiding-centre orbits are back.** The barely and deeply passing and trapped orbits of
@@ -154,10 +193,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the difference is four point-vortex runs that complete their thousand steps either way —
   `vprk_lobatto_IIIB{3,4}_p{symmetric,midpoint}`, 3.5–5.1 s each with the cap and 43–62 s without —
   and the same shape appears at about six-fold wherever a run sits near its residual floor. Dropping
-  it would also cost figures rather than gain them: `vprk_lobatto_IIIA{3,4}_p{symmetric,midpoint}` on
-  the point vortices fall from 20–36 completed steps to none, the stagnation detector retiring them
-  before the cap would have. The comment above `SOLVER_OPTIONS` records this, since the shared value
-  is exactly what invites someone to align the four packages again.
+  it would also cost figures rather than gain them: `vprk_lobatto_IIIA4_p{symmetric,midpoint}` on
+  the point vortices fall from 23 completed steps to none, the stagnation detector retiring them
+  before the cap would have. (The `IIIA3` pair fails on a singular matrix at the first step with or
+  without the cap; an earlier draft of this entry counted them in.) The comment above
+  `SOLVER_OPTIONS` records this, since the shared value is exactly what invites someone to align the
+  four packages again.
 
 - **The formal Lagrangian Runge-Kutta methods are work rather than a gap.** `FLRK` was commented out
   of GeometricIntegrators when this gallery was modernized, which is why the point-vortex runs on

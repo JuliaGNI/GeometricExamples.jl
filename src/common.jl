@@ -67,10 +67,28 @@ const PLOT_THEME = Theme(
 # gallery has such solves and they are expensive. Measured over every page it builds, at 1000 time
 # steps per run: 96 s with the cap against 297 s without it, almost all of the difference in four
 # point-vortex runs that complete either way — `vprk_lobatto_IIIB{3,4}_p{symmetric,midpoint}` go
-# from 3.5–5.1 s to 43–62 s each. Four further point-vortex runs lose their trajectory entirely,
-# `vprk_lobatto_IIIA{3,4}_p{symmetric,midpoint}` falling from 20–36 completed steps to none, because
-# the stagnation detector retires them before the cap would have. Do not "align with the companion
-# packages" here: this is the one problem set where the cap is doing work.
+# from 3.5–5.1 s to 43–62 s each. Two further point-vortex runs lose their trajectory entirely,
+# `vprk_lobatto_IIIA4_p{symmetric,midpoint}` falling from 23 completed steps to none, because the
+# stagnation detector retires them before the cap would have. (The IIIA3 pair fails on a singular
+# matrix at the first step either way, which an earlier revision of this comment folded in with
+# them.) Do not "align with the companion packages" here: this is the one problem set where the cap
+# is doing work.
+#
+# GeometricIntegratorsBase 0.6 added `f_stall_window = 50` to its `default_options` — give up on a
+# solve that spends 50 iterations without halving its residual — which is exactly the case the cap
+# is here for, and it does **not** replace the cap. Measured on 0.18/0.6.2, at 1000 steps per run:
+#   * For a *projected* method the option never reaches the solver at all. `VPRKp*` is built by
+#     GeometricIntegrators' own projection path, which still *replaces* the defaults with whatever
+#     the caller passes rather than merging them (`src/projections/projection.jl:51`), so the
+#     defaults are dropped wholesale the moment `solver_options()` is handed over. The nine
+#     point-vortex runs above take 21 s with the cap and 248 s without it whether `f_stall_window`
+#     is 50 or 0, with identical step counts.
+#   * For an *unprojected* method it does reach the solver, through the merge in
+#     `GeometricIntegratorsBase/src/integrator.jl:47` — and changes nothing: over 132 combinations
+#     (the Lobatto IIIA–IIIG, Gauss and Radau VPRK families against the point vortices, both
+#     Lotka-Volterra gauges and the massless charged particle) not one run's step count or failure
+#     mode differs between `f_stall_window = 50` and `f_stall_window = 0`.
+# So the criterion is inert here and the cap is not; leave both as they are.
 const SOLVER_OPTIONS = (f_abstol = 1E-14, f_reltol = 1E-14, max_iterations = 100)
 
 # What every integrator here is actually built with: the tolerances above, plus the current

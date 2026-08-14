@@ -148,7 +148,7 @@ two-form, on an advected surface sampled at Padua points.
 
 ## Known Gaps
 
-This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.17 /
+This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.18 /
 GeometricProblems 0.8 / ChargedParticleDynamics 0.4 / PoincareInvariants 0.5 / CairoMakie 0.15. A
 few things it used to cover have no counterpart in the current stack and are recorded here rather
 than quietly dropped.
@@ -192,11 +192,14 @@ than quietly dropped.
   point-vortex runs on `lodeproblem_formal_lagrangian` have simply not been rebuilt, which needs a
   method list, a page and a weave document of their own. See `TODO.md`.
 * **Internal-stage projection.** `VPRKpInternal` still constructs, but the
-  `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.17 — only the
+  `InternalStageProjection` it builds has no integrator in GeometricIntegrators 0.18 — only the
   standard, symmetric and midpoint projections do. Its runs are listed on the VPRK pages and fail
-  immediately there, which is what a missing integrator looks like.
+  immediately there with a `MethodError`, which is what a missing integrator looks like.
+  (Re-checked on 0.18: the uniform `ArgumentError` that GeometricIntegratorsBase 0.6.2 introduced
+  for unsupported method/problem pairs does not reach this case, since the projection is
+  GeometricIntegrators' own rather than one of that package's methods.)
 * **HDF5 output.** `Simulation`/`run!` and the HDF5 writing they did are commented out in
-  GeometricIntegrators 0.17. The pages produce figures only; no solution files are written.
+  GeometricIntegrators 0.18. The pages produce figures only; no solution files are written.
 * **Compensated summation.** `set_config(:tab_compensated_summation, …)` no longer exists, so the
   `*_comp` variants of the guiding-centre scripts would now duplicate the plain ones.
 * **Splitting methods.** A splitting method needs an `sodeproblem`, which none of the problems

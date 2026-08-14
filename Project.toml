@@ -1,6 +1,6 @@
 name = "GeometricExamples"
 uuid = "1f9cae71-2432-55b2-8d6a-2439aa3a6c65"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Michael Kraus <michael.kraus@ipp.mpg.de>"]
 
 [deps]
@@ -25,11 +25,17 @@ CairoMakie = "0.15"
 # in the cylindrical charts both tokamak equilibria here are built on. See `docs/src/index.md`.
 ChargedParticleDynamics = "0.4"
 Documenter = "1"
-GeometricIntegrators = "0.17"
-GeometricIntegratorsBase = "0.5"
+# These three move together: GeometricIntegrators 0.18 requires GeometricIntegratorsBase 0.6, which
+# requires SimpleSolvers 0.11. 0.18 also renamed four Runge-Kutta methods with an `RK` suffix, to
+# make room for the integrators GeometricIntegratorsBase gained of the same name — `SymplecticEulerA`
+# is now the latter's explicit method, which is what `src/standard-map.jl` runs.
+GeometricIntegrators = "0.18"
+# 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
+# `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
+GeometricIntegratorsBase = "0.6"
 GeometricProblems = "0.8"
 PoincareInvariants = "0.5"
-SimpleSolvers = "0.10"
+SimpleSolvers = "0.11"
 Weave = "0.10"
 julia = "1.10"
 
