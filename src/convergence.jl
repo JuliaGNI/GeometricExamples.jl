@@ -1,7 +1,6 @@
 
 using GeometricProblems.Diagnostics: plot_convergence, plot_order
 
-
 # Number of time step halvings a convergence study measures, and the number of *further* halvings
 # used for its reference solution. Taking the finest measured run as the reference would make the
 # reference error comparable to the smallest error measured against it, which flattens the
@@ -9,7 +8,6 @@ using GeometricProblems.Diagnostics: plot_convergence, plot_order
 # below the finest measured one.
 const NREFINE = 8
 const NREFERENCE = 2
-
 
 # Reference slope for a convergence plot, or `nothing` when the method reports no usable order —
 # `order(::ProjectedMethod)` is `missing`, for instance. Where an order *is* reported it is only a
@@ -19,7 +17,6 @@ const NREFERENCE = 2
 # guide only; the measured order is what the companion `_order` figure reports.
 _reference_order(method) = (o = order(method); o isa Integer && o > 0 ? o : nothing)
 
-
 # Relative error of the final state of `sol` against that of the reference solution `ref`, in the
 # maximum norm over the state components.
 function _final_state_error(sol, ref)
@@ -27,7 +24,6 @@ function _final_state_error(sol, ref)
     scale = max(maximum(abs, qref), one(eltype(qref)))
     maximum(abs, q .- qref) / scale
 end
-
 
 # Span of the relative error of one invariant over the whole run — the diagnostic the pre-0.2
 # gallery used (`abs(maximum(H_err) - minimum(H_err))`). `invariant` is a key into
@@ -42,7 +38,6 @@ function _invariant_error_span(sol, invariant)
            compute_invariant_error(sol.t, sol.q, parameters(equ), f)
     maximum(Δ) - minimum(Δ)
 end
-
 
 """
 Convergence study of one method over a sequence of halved time steps.
@@ -69,9 +64,8 @@ page of the same problem share a directory and are given the same method list, s
 two would write over each other's pages and figures.
 """
 function run_convergence(problem, name, list, invariants = (), plot_dir = PLOT_DIR;
-                         nrefine = NREFINE, nreference = NREFERENCE, prefix = "convergence_",
-                         fig_suff = ".png")
-
+        nrefine = NREFINE, nreference = NREFERENCE, prefix = "convergence_",
+        fig_suff = ".png")
     isdir(plot_dir) || mkpath(plot_dir)
 
     for run in list
@@ -83,7 +77,7 @@ function run_convergence(problem, name, list, invariants = (), plot_dir = PLOT_D
         _linebreak(stdout)
 
         # The last `nreference` entries are the reference runs, which are not plotted.
-        h    = [timestep(problem) / 2^(i-1) for i in 1:(nrefine + nreference)]
+        h = [timestep(problem) / 2^(i-1) for i in 1:(nrefine + nreference)]
         sols = Vector{Any}(undef, length(h))
         good = Int[]
 
@@ -116,7 +110,7 @@ function run_convergence(problem, name, list, invariants = (), plot_dir = PLOT_D
         # the reference runs themselves crashed this falls back to the finest run that did
         # complete, which costs accuracy at the fine end but still gives a usable study.
         ref_i = isempty(good) ? 0 : last(good)
-        ref   = ref_i == 0 ? nothing : sols[ref_i]
+        ref = ref_i == 0 ? nothing : sols[ref_i]
 
         # Plotted are the `nrefine` coarse time steps that completed, never a reference run.
         idx = filter(i -> i ≤ nrefine && i != ref_i, good)
@@ -137,38 +131,45 @@ function run_convergence(problem, name, list, invariants = (), plot_dir = PLOT_D
         # The observed order between two consecutive *plotted* runs. Normalising by the number of
         # halvings between them, `log2(hⱼ / hⱼ₊₁)`, keeps this right when a run in between crashed
         # and the two are more than one halving apart.
-        p = [log2(ε[j] / ε[j+1]) / log2(h[idx[j]] / h[idx[j+1]]) for j in 1:(length(ε)-1)]
+        p = [log2(ε[j] / ε[j + 1]) / log2(h[idx[j]] / h[idx[j + 1]])
+             for j in 1:(length(ε) - 1)]
 
         refslope = _reference_order(method)
 
         attempted = String[]
-        figure(plot, suffix) = (push!(attempted, suffix); _save_plot(plot, plot_dir, file, suffix, fig_suff))
+        figure(plot, suffix) = (
+            push!(attempted, suffix); _save_plot(plot, plot_dir, file, suffix, fig_suff))
 
         figure(() -> plot_convergence(h[idx], ε; order = refslope, latex = false),
-               "_solution")
-        length(p) ≥ 1 && figure(() -> plot_order(h[idx[1:end-1]], p; latex = false), "_order")
+            "_solution")
+        length(p) ≥ 1 &&
+            figure(() -> plot_order(h[idx[1:(end - 1)]], p; latex = false), "_order")
 
-        figure(() -> plot_convergence(h[idx], [_invariant_error_span(sols[i], :h) for i in idx];
-                                      order = refslope, latex = false),
-               "_energy")
+        figure(
+            () -> plot_convergence(
+                h[idx], [_invariant_error_span(sols[i], :h) for i in idx];
+                order = refslope, latex = false),
+            "_energy")
 
         for (invariant, invname, _) in invariants
-            figure(() -> plot_convergence(h[idx], [_invariant_error_span(sols[i], invariant) for i in idx];
-                                          order = refslope, latex = false),
-                   "_$(invname)")
+            figure(
+                () -> plot_convergence(
+                    h[idx], [_invariant_error_span(sols[i], invariant) for i in idx];
+                    order = refslope, latex = false),
+                "_$(invname)")
         end
 
         _write_convergence_page(plot_dir, file, name, fig_suff, invariants, attempted)
 
         overview = "$plot_dir/$(file)_solution$fig_suff"
-        isfile(overview) && show(stdout, "text/markdown", Markdown.parse("![$name]($overview)"))
+        isfile(overview) &&
+            show(stdout, "text/markdown", Markdown.parse("![$name]($overview)"))
 
         GC.gc()
     end
 
     nothing
 end
-
 
 function _write_convergence_page(dir, file, name, fig_suff, invariants, attempted)
     path(suffix) = "$(dir)/$(file)$(suffix)$(fig_suff)"

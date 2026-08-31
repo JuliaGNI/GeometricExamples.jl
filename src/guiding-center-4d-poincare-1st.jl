@@ -10,19 +10,19 @@ isdefined(@__MODULE__, :GuidingCenter4dPoincareExamples) ||
 
 module GuidingCenter4dPoincare1stExamples
 
-    # `using GeometricExamples` puts the `tableaus_*` lists in scope: Weave evaluates each page's
-    # chunk inside this module.
-    using GeometricExamples
+# `using GeometricExamples` puts the `tableaus_*` lists in scope: Weave evaluates each page's
+# chunk inside this module.
+using GeometricExamples
 
-    import ..GuidingCenter4dPoincareExamples as GCP
+import ..GuidingCenter4dPoincareExamples as GCP
 
-    const KIND = :first
+const KIND = :first
 
-    odeproblem(geometry; kwargs...) = GCP.odeproblem(KIND, geometry; kwargs...)
-    iodeproblem(geometry; kwargs...) = GCP.iodeproblem(KIND, geometry; kwargs...)
+odeproblem(geometry; kwargs...) = GCP.odeproblem(KIND, geometry; kwargs...)
+iodeproblem(geometry; kwargs...) = GCP.iodeproblem(KIND, geometry; kwargs...)
 
-    run_poincare(args...; kwargs...) = GCP.run_poincare(KIND, args...; kwargs...)
+run_poincare(args...; kwargs...) = GCP.run_poincare(KIND, args...; kwargs...)
 
-    export odeproblem, iodeproblem, run_poincare
+export odeproblem, iodeproblem, run_poincare
 
 end

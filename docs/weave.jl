@@ -17,13 +17,12 @@ using Weave
 
 import GeometricExamples
 
-
 # problem name (in `src/`, `weave/` and `docs/src/`) → module defined by `src/<problem>.jl`
 const PROBLEMS = (
-    "lotka-volterra-2d"                => :LotkaVolterra2dExamples,
-    "lotka-volterra-2d-singular"       => :LotkaVolterra2dSingularExamples,
-    "massless-charged-particle"        => :MasslessChargedParticleExamples,
-    "point-vortices"                   => :PointVorticesExamples,
+    "lotka-volterra-2d" => :LotkaVolterra2dExamples,
+    "lotka-volterra-2d-singular" => :LotkaVolterra2dSingularExamples,
+    "massless-charged-particle" => :MasslessChargedParticleExamples,
+    "point-vortices" => :PointVorticesExamples,
     "guiding-center-4d-barely-passing" => :GuidingCenter4dBarelyPassingExamples,
     "guiding-center-4d-barely-trapped" => :GuidingCenter4dBarelyTrappedExamples,
     "guiding-center-4d-deeply-passing" => :GuidingCenter4dDeeplyPassingExamples,
@@ -32,9 +31,9 @@ const PROBLEMS = (
     "guiding-center-4d-small-barely-trapped" => :GuidingCenter4dSmallBarelyTrappedExamples,
     "guiding-center-4d-small-deeply-passing" => :GuidingCenter4dSmallDeeplyPassingExamples,
     "guiding-center-4d-small-deeply-trapped" => :GuidingCenter4dSmallDeeplyTrappedExamples,
-    "guiding-center-4d-poincare-1st"   => :GuidingCenter4dPoincare1stExamples,
-    "guiding-center-4d-poincare-2nd"   => :GuidingCenter4dPoincare2ndExamples,
-    "standard-map"                     => :StandardMapExamples,
+    "guiding-center-4d-poincare-1st" => :GuidingCenter4dPoincare1stExamples,
+    "guiding-center-4d-poincare-2nd" => :GuidingCenter4dPoincare2ndExamples,
+    "standard-map" => :StandardMapExamples
 )
 
 # The Euler-Lagrange equations, and hence the `odeproblem`, do not depend on the gauge, so the
@@ -42,15 +41,16 @@ const PROBLEMS = (
 # and are not built. The standard map is a different kind of example altogether: it carries the
 # Poincaré integral invariants rather than a comparison of trajectory diagnostics.
 const TRAJECTORY_PAGES = ("erk", "firk-gauss", "firk-lobatto",
-                          "vprk-gauss", "vprk-srk3", "vprk-lobatto",
-                          "vprk-lobatto-symplectic", "vprk-radau")
+    "vprk-gauss", "vprk-srk3", "vprk-lobatto",
+    "vprk-lobatto-symplectic", "vprk-radau")
 
 # The guiding centre orbits get the families the pre-0.2 gallery ran for them: the fully implicit
 # Runge-Kutta methods on the explicit formulation and the projected VPRK methods on the variational
 # one. No `erk` page — an explicit method on a guiding centre orbit at these time steps is
 # unconditionally unstable — and no Lobatto VPRK page, whose 126 runs would multiply by the four
 # orbits; both are one line here if wanted.
-const GUIDING_CENTER_PAGES = ("firk-gauss", "firk-lobatto", "vprk-gauss", "vprk-srk3", "vprk-radau")
+const GUIDING_CENTER_PAGES = (
+    "firk-gauss", "firk-lobatto", "vprk-gauss", "vprk-srk3", "vprk-radau")
 
 # The small tokamak's four orbits get the two Gauss families only. The pre-0.2 gallery defined these
 # cases (`examples/guiding_center_4d/tokamak_slow_particles/`) but never wrote the driver wrappers
@@ -69,13 +69,13 @@ const SMALL_TOKAMAK_PAGES = ("firk-gauss", "vprk-gauss")
 const POINCARE_PAGES = ("tokamak-firk-gauss", "tokamak-vprk-gauss", "symmetric-vprk-gauss")
 
 const PAGES = Dict(
-    "lotka-volterra-2d"                => TRAJECTORY_PAGES,
-    "lotka-volterra-2d-singular"       => filter(startswith("vprk"), TRAJECTORY_PAGES),
+    "lotka-volterra-2d" => TRAJECTORY_PAGES,
+    "lotka-volterra-2d-singular" => filter(startswith("vprk"), TRAJECTORY_PAGES),
     # No Lobatto VPRK page: its 126 runs over this problem's time interval are the most expensive
     # combination in the gallery and did not fit a four hour job timeout even after the run length
     # was cut to 10⁴ steps. The 36-run Gauss and symplectic-Lobatto matrices cover the same ground.
-    "massless-charged-particle"        => filter(!=("vprk-lobatto"), TRAJECTORY_PAGES),
-    "point-vortices"                   => (TRAJECTORY_PAGES..., "convergence"),
+    "massless-charged-particle" => filter(!=("vprk-lobatto"), TRAJECTORY_PAGES),
+    "point-vortices" => (TRAJECTORY_PAGES..., "convergence"),
     "guiding-center-4d-barely-passing" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-barely-trapped" => GUIDING_CENTER_PAGES,
     "guiding-center-4d-deeply-passing" => GUIDING_CENTER_PAGES,
@@ -84,38 +84,38 @@ const PAGES = Dict(
     "guiding-center-4d-small-barely-trapped" => SMALL_TOKAMAK_PAGES,
     "guiding-center-4d-small-deeply-passing" => SMALL_TOKAMAK_PAGES,
     "guiding-center-4d-small-deeply-trapped" => SMALL_TOKAMAK_PAGES,
-    "guiding-center-4d-poincare-1st"   => POINCARE_PAGES,
-    "guiding-center-4d-poincare-2nd"   => POINCARE_PAGES,
-    "standard-map"                     => ("poincare-1st", "poincare-2nd"),
+    "guiding-center-4d-poincare-1st" => POINCARE_PAGES,
+    "guiding-center-4d-poincare-2nd" => POINCARE_PAGES,
+    "standard-map" => ("poincare-1st", "poincare-2nd")
 )
 
 source_path(problem, page) = joinpath(@__DIR__, "..", "weave", "$(problem)-$(page).jmd")
 
-
 # Returns `(problem, module name, pages)` for the command line arguments.
 function parse_arguments(args)
     isempty(args) && error("usage: julia --project=.. weave.jl <problem> [<page> ...]\n" *
-                           "problems: " * join(first.(PROBLEMS), ", "))
+          "problems: " * join(first.(PROBLEMS), ", "))
 
     problem = args[1]
 
     i = findfirst(p -> first(p) == problem, PROBLEMS)
     i === nothing && error("unknown problem \"$problem\"; expected one of " *
-                           join(first.(PROBLEMS), ", "))
+          join(first.(PROBLEMS), ", "))
 
     pages = length(args) > 1 ? args[2:end] : collect(PAGES[problem])
 
     for page in pages
-        page in PAGES[problem] || error("unknown page \"$page\" for problem \"$problem\"; " *
-                                        "expected one of " * join(PAGES[problem], ", "))
-        isfile(source_path(problem, page)) || error("no such document: $(source_path(problem, page))")
+        page in PAGES[problem] ||
+            error("unknown page \"$page\" for problem \"$problem\"; " *
+                  "expected one of " * join(PAGES[problem], ", "))
+        isfile(source_path(problem, page)) ||
+            error("no such document: $(source_path(problem, page))")
     end
 
     (problem, last(PROBLEMS[i]), pages)
 end
 
 const problem, modname, pages = parse_arguments(ARGS)
-
 
 Weave.set_chunk_defaults!(:echo => false, :results => "raw")
 
@@ -131,7 +131,7 @@ GeometricExamples.quiet_solver_warnings!()
 
 for page in pages
     weave(source_path(problem, page),
-             out_path = "src/$(problem)",
-             doctype = "github",
-             mod = mod)
+        out_path = "src/$(problem)",
+        doctype = "github",
+        mod = mod)
 end

@@ -10,24 +10,24 @@ using GeometricExamples
 # method converges on a given problem is the subject of the woven pages, not of this test.
 
 const tableaus_ode = (
-    "Explicit Runge-Kutta"      => tableaus_erk(),
-    "Gauss-Legendre"            => tableaus_firk_gauss(),
-    "Lobatto"                   => tableaus_firk_lobatto(),
+    "Explicit Runge-Kutta" => tableaus_erk(),
+    "Gauss-Legendre" => tableaus_firk_gauss(),
+    "Lobatto" => tableaus_firk_lobatto()
 )
 
 const tableaus_iode = (
-    "Gauss-Legendre VPRK"       => tableaus_vprk_gauss(),
-    "Symmetric SRK3 VPRK"       => tableaus_vprk_srk3(),
-    "Lobatto VPRK"              => tableaus_vprk_lobatto(),
-    "Symplectic Lobatto VPRK"   => tableaus_vprk_lobatto_symplectic(),
-    "Radau IIA VPRK"            => tableaus_vprk_radau(),
+    "Gauss-Legendre VPRK" => tableaus_vprk_gauss(),
+    "Symmetric SRK3 VPRK" => tableaus_vprk_srk3(),
+    "Lobatto VPRK" => tableaus_vprk_lobatto(),
+    "Symplectic Lobatto VPRK" => tableaus_vprk_lobatto_symplectic(),
+    "Radau IIA VPRK" => tableaus_vprk_radau()
 )
 
 const problems = (
     GeometricProblems.LotkaVolterra2d,
     GeometricProblems.LotkaVolterra2dSingular,
     GeometricProblems.MasslessChargedParticle,
-    GeometricProblems.PointVortices,
+    GeometricProblems.PointVortices
 )
 
 const nt = 1
@@ -93,14 +93,17 @@ include("../src/guiding-center-4d.jl")
         using CairoMakie: Figure
         Δt = GuidingCenter4dExamples._case(case)[4]
         equ = GuidingCenter4dExamples.equilibrium(case)
-        sol = integrate(GuidingCenter4dExamples.iodeproblem(case; timespan = (0.0, 20 * Δt)),
-                        VPRKGauss(2))
+        sol = integrate(
+            GuidingCenter4dExamples.iodeproblem(case; timespan = (0.0, 20 * Δt)),
+            VPRKGauss(2))
 
         @test GuidingCenter4dExamples.plot_solution(equ, sol; latex = false) isa Figure
-        @test GuidingCenter4dExamples.plot_phase_portrait(equ, sol; latex = false) isa Figure
+        @test GuidingCenter4dExamples.plot_phase_portrait(equ, sol; latex = false) isa
+              Figure
         @test GuidingCenter4dExamples.plot_traces(equ, sol; latex = false) isa Figure
         # Downsampling and truncation are the adapters' own work, not the recipes'.
-        @test GuidingCenter4dExamples.plot_traces(equ, sol; nplot = 5, nt = 10, latex = false) isa Figure
+        @test GuidingCenter4dExamples.plot_traces(
+            equ, sol; nplot = 5, nt = 10, latex = false) isa Figure
 
         # The bundle `run_list` receives must call those adapters with this case's equilibrium, and
         # carry the equilibrium's own toroidal momentum.
@@ -133,7 +136,8 @@ const GCP = GuidingCenter4dPoincareExamples
     npoints(kind) = kind === :first ? 32 : 45
 
     @testset "$(kind), $(geometry)" for kind in (:first, :second),
-                                        geometry in (:tokamak, :symmetric)
+        geometry in (:tokamak, :symmetric)
+
         spec = GCP.SPECS[kind]
         equ = GCP.GEOMETRIES[geometry]
 
@@ -142,9 +146,8 @@ const GCP = GuidingCenter4dPoincareExamples
 
         # The explicit formulation with a fully implicit Runge-Kutta method and the variational one
         # with a projected VPRK method: the two pairings the pages are built on.
-        @testset "$(nameof(typeof(method)))" for (problem, method) in
-                ((GCP.odeproblem, Gauss(2)), (GCP.iodeproblem, VPRKpSymmetric(VPRKGauss(2))))
-
+        @testset "$(nameof(typeof(method)))" for (problem, method) in ((
+            GCP.odeproblem, Gauss(2)), (GCP.iodeproblem, VPRKpSymmetric(VPRKGauss(2))))
             prob = problem(kind, geometry; timespan = timespan, timestep = Δt)
             sol = integrate(spec.ensemble(equ, prob, pinv), method)
             I = compute!(pinv, sol, parameters(prob))
@@ -162,7 +165,8 @@ const GCP = GuidingCenter4dPoincareExamples
     # `to_cartesian` is a coordinate transformation on the tokamak and the identity on the
     # symmetric field.
     @testset "figures, $(kind), $(geometry)" for kind in (:first, :second),
-                                                 geometry in (:tokamak, :symmetric)
+        geometry in (:tokamak, :symmetric)
+
         spec = GCP.SPECS[kind]
         equ = GCP.GEOMETRIES[geometry]
 
@@ -180,7 +184,7 @@ const GCP = GuidingCenter4dPoincareExamples
 
         # `plot_invariant` has to be qualified: `ChargedParticleDynamics` exports one of its own.
         @test PoincareInvariants.plot_invariant(pinv, "Δt = $(Δt)" => sol;
-                                                p = parameters(prob)) isa Figure
+            p = parameters(prob)) isa Figure
 
         mktempdir() do dir
             suffixes = spec.figures(sol, equ, dir, "figure", ".png")
@@ -229,11 +233,12 @@ include("../src/standard-map.jl")
 
     pi1 = CanonicalFirstPI{Float64, 2}(2000)
     I1 = compute!(pi1, integrate(PIEnsembleProblem(regular, pi1, StandardMapExamples.loop),
-                                 SymplecticEulerA()))
+        SymplecticEulerA()))
     @test maximum(abs, (I1 .- I1[1]) ./ I1[1]) < 1E-13
 
     pi2 = CanonicalSecondPI{Float64, 2}(2000)
-    I2 = compute!(pi2, integrate(PIEnsembleProblem(regular, pi2, StandardMapExamples.surface),
-                                 SymplecticEulerA()))
+    I2 = compute!(pi2,
+        integrate(PIEnsembleProblem(regular, pi2, StandardMapExamples.surface),
+            SymplecticEulerA()))
     @test maximum(abs, (I2 .- I2[1]) ./ I2[1]) < 1E-10
 end

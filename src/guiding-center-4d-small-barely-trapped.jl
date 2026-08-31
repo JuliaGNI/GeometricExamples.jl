@@ -9,19 +9,19 @@ isdefined(@__MODULE__, :GuidingCenter4dExamples) ||
 
 module GuidingCenter4dSmallBarelyTrappedExamples
 
-    # `using GeometricExamples` puts the `tableaus_*` lists in scope: Weave evaluates each page's
-    # chunk inside this module.
-    using GeometricExamples
+# `using GeometricExamples` puts the `tableaus_*` lists in scope: Weave evaluates each page's
+# chunk inside this module.
+using GeometricExamples
 
-    import ..GuidingCenter4dExamples as GC4
+import ..GuidingCenter4dExamples as GC4
 
-    const CASE = :small_barely_trapped
+const CASE = :small_barely_trapped
 
-    iodeproblem(; kwargs...) = GC4.iodeproblem(CASE; kwargs...)
-    odeproblem(; kwargs...) = GC4.odeproblem(CASE; kwargs...)
+iodeproblem(; kwargs...) = GC4.iodeproblem(CASE; kwargs...)
+odeproblem(; kwargs...) = GC4.odeproblem(CASE; kwargs...)
 
-    run_list(args...; kwargs...) = GC4.run_list(CASE, args...; kwargs...)
+run_list(args...; kwargs...) = GC4.run_list(CASE, args...; kwargs...)
 
-    export iodeproblem, odeproblem, run_list
+export iodeproblem, odeproblem, run_list
 
 end

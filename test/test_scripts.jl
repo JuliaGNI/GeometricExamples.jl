@@ -11,7 +11,7 @@ using GeometricIntegrators
 using GeometricExamples
 
 for problem in ("lotka-volterra-2d", "lotka-volterra-2d-singular",
-                "massless-charged-particle", "point-vortices", "standard-map")
+    "massless-charged-particle", "point-vortices", "standard-map")
     include(joinpath(@__DIR__, "../src/$(problem).jl"))
 end
 
@@ -21,7 +21,9 @@ mktempdir() do dir
     cd(dir) do
         # A hundred time steps: enough for the energy drift diagnostic, which needs at least ten
         # steps to have intervals.
-        short(mod, kind = :iodeproblem) = getfield(mod, kind)(; timestep = 0.01, timespan = (0.0, 1.0))
+        function short(mod, kind = :iodeproblem)
+            getfield(mod, kind)(; timestep = 0.01, timespan = (0.0, 1.0))
+        end
 
         # One method per family, and one that is expected to fail (`VPRKpInternal`, whose
         # projection has no integrator), so that the crash-reporting path is exercised too.
@@ -29,15 +31,16 @@ mktempdir() do dir
         # variational ones on the `iodeproblem`, exactly as the weave pages do.
         LotkaVolterra2dExamples.run_list(short(LotkaVolterra2dExamples, :odeproblem),
             "Lotka-Volterra 2d", ((RK416(), "erk4_16"), (Gauss(2), "firk_gauss2")))
-        LotkaVolterra2dExamples.run_list(short(LotkaVolterra2dExamples), "Lotka-Volterra 2d",
+        LotkaVolterra2dExamples.run_list(
+            short(LotkaVolterra2dExamples), "Lotka-Volterra 2d",
             ((VPRKpSymmetric(VPRKGauss(2)), "vprk_gauss2_psymmetric"),
-             (VPRKpInternal(VPRKGauss(2)), "vprk_gauss2_pinternal")))
+                (VPRKpInternal(VPRKGauss(2)), "vprk_gauss2_pinternal")))
 
         # The singular Lagrangian, on which the non-symplectic Lobatto VPRK methods break down.
         LotkaVolterra2dSingularExamples.run_list(short(LotkaVolterra2dSingularExamples),
             "Lotka-Volterra 2d (singular)",
             ((VPRKLobattoIIIAIIIB(3), "vprk_lobatto_IIIA_IIIB3"),
-             (VPRKLobattoIIIA(3), "vprk_lobatto_IIIA3")))
+                (VPRKLobattoIIIA(3), "vprk_lobatto_IIIA3")))
 
         MasslessChargedParticleExamples.run_list(short(MasslessChargedParticleExamples),
             "Massless Charged Particle", ((VPRKGauss(2), "vprk_gauss2"),))
