@@ -128,9 +128,3 @@ git push --no-verify
 The hooks are generated from one shared copy and are byte-identical across the related
 repositories, so edit them there rather than here — a local edit is silently undone by the next
 install.
-
-
-## License
-
-The GeometricExamples.jl package is licensed under the [MIT "Expat" License](LICENSE.md).
-All figures are licensed under the Creative Commons [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
