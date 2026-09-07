@@ -6,7 +6,11 @@
 .tags
 .tags1
 
-# Solution and figure files produced by the example runs
+# Run data and rendered output produced by the example runs
+/runs
+/results
+
+# Solution and figure files, wherever an example writes them
 *.h5
 *.hdf5
 *.pdf

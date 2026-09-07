@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`.gitignore` gains root-anchored `/runs` and `/results`.** The repository relied on extension
+  patterns alone — `*.h5`, `*.hdf5`, `*.pdf`, `*.png` — which is the case the house rule in
+  `Packages/CLAUDE.md` names explicitly: extensions leave whatever else a run drops behind
+  untracked but visible, and they do not stop a driver from being written into an output directory.
+  The extension patterns stay, since examples write figures outside those directories too. Nothing
+  was tracked under either directory, so no history changed.
 - **The solver stack moves to GeometricIntegrators 0.18, GeometricIntegratorsBase 0.6 and
   SimpleSolvers 0.11.** The three bounds move together: 0.18 requires GeometricIntegratorsBase 0.6,
   which requires SimpleSolvers 0.11. RungeKutta 0.6, QuadratureRules 0.2 and CompactBasisFunctions
