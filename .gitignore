@@ -10,6 +10,9 @@
 /runs
 /results
 
+# The default plot directory, `PLOT_DIR` in src/common.jl, at whatever depth a run creates it
+figures/
+
 # Solution and figure files, wherever an example writes them
 *.h5
 *.hdf5
