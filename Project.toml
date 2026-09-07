@@ -19,23 +19,13 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
 CairoMakie = "0.15"
-# 0.4 renamed every problem constructor of the guiding-centre modules to the `GeometricProblems`
-# scheme and their `tspan`/`tstep` keywords to `timespan`/`timestep`, with no deprecation shims, and
-# brings `ElectromagneticFields` 0.8 with it — which through 0.7.0 corrects the orientation of `B`
-# in the cylindrical charts both tokamak equilibria here are built on. See `docs/src/index.md`.
 ChargedParticleDynamics = "0.4"
 Documenter = "1"
-# These three move together: GeometricIntegrators 0.18 requires GeometricIntegratorsBase 0.6, which
-# requires SimpleSolvers 0.11. 0.18 also renamed four Runge-Kutta methods with an `RK` suffix, to
-# make room for the integrators GeometricIntegratorsBase gained of the same name — `SymplecticEulerA`
-# is now the latter's explicit method, which is what `src/standard-map.jl` runs.
 GeometricIntegrators = "0.18"
-# 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
-# `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
 GeometricIntegratorsBase = "0.6"
 GeometricProblems = "0.8"
 PoincareInvariants = "0.5"
-SimpleSolvers = "0.11"
+SimpleSolvers = "0.11, 0.13"
 Weave = "0.10"
 julia = "1.10"
 
