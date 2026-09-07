@@ -6,7 +6,14 @@
 .tags
 .tags1
 
-# Solution and figure files produced by the example runs
+# Run data and rendered output produced by the example runs
+/runs
+/results
+
+# The default plot directory, `PLOT_DIR` in src/common.jl, at whatever depth a run creates it
+figures/
+
+# Solution and figure files, wherever an example writes them
 *.h5
 *.hdf5
 *.pdf

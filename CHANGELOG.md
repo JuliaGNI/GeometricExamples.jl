@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`.gitignore` ignores the output directories, not just their extensions.** The repository relied
+  on extension patterns alone — `*.h5`, `*.hdf5`, `*.pdf`, `*.png` — which leave whatever else a run
+  drops behind untracked but visible, and do not stop a driver from being written into an output
+  directory. `figures/` is now ignored at whatever depth a run creates it: it is the default plot
+  directory, `PLOT_DIR` in `src/common.jl`, and while weaving puts it under the already-ignored
+  `docs/src/<problem>/`, calling a run driver from the repository root creates it there. Root-anchored
+  `/runs` and `/results` come with it, for the run-data-and-rendered-output split the drivers do not
+  use yet. The extension patterns stay, since examples write figures outside these directories too.
+  Nothing was tracked under any of the three, so no history changed.
 - **The solver stack moves to GeometricIntegrators 0.18, GeometricIntegratorsBase 0.6 and
   SimpleSolvers 0.11.** The three bounds move together: 0.18 requires GeometricIntegratorsBase 0.6,
   which requires SimpleSolvers 0.11. RungeKutta 0.6, QuadratureRules 0.2 and CompactBasisFunctions
