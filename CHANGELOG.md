@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`[compat]` accepts SimpleSolvers 0.13 and GeometricProblems 0.9.** The two bounds widen rather
+  than move: `SimpleSolvers = "0.11, 0.13"` and `GeometricProblems = "0.8, 0.9"`, so an environment
+  that resolves the older pair still resolves. This combines the two open CompatHelper pull
+  requests, JuliaGNI/GeometricExamples.jl#1 and #2, into one change. Nothing else moves, and no
+  source file changes. The note above `GeometricIntegrators` still says the three solver bounds move
+  together and names SimpleSolvers 0.11; that sentence describes the lower end of the range, which
+  is unchanged, but whether GeometricIntegratorsBase 0.6 accepts SimpleSolvers 0.13 is a question
+  the resolver answers, not this file. CI is the check on both widenings.
 - **`.gitignore` ignores the output directories, not just their extensions.** The repository relied
   on extension patterns alone — `*.h5`, `*.hdf5`, `*.pdf`, `*.png` — which leave whatever else a run
   drops behind untracked but visible, and do not stop a driver from being written into an output
