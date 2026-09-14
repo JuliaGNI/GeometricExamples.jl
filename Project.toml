@@ -33,9 +33,9 @@ GeometricIntegrators = "0.18"
 # 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
 GeometricIntegratorsBase = "0.6"
-GeometricProblems = "0.8"
+GeometricProblems = "0.8, 0.9"
 PoincareInvariants = "0.5"
-SimpleSolvers = "0.11"
+SimpleSolvers = "0.11, 0.13"
 Weave = "0.10"
 julia = "1.10"
 
