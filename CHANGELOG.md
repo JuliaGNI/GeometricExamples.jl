@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Two lower bounds are raised to versions that can install.** On Julia 1.10, with each other
+  entry as written, the old floors do not resolve:
+
+  | entry | was | is | why the old floor fails |
+  |:--|:--|:--|:--|
+  | `GeometricIntegrators` | `0.18` | `0.18.1` | 0.18.0 needs `SimpleSolvers` 0.10, which this package does not admit |
+  | `Weave` | `0.10` | `0.10.11` | the resolve fails at `Symbolics`, a transitive dependency |
+
+  All floors together resolve on 1.10.12. Nothing any user installs changes: the resolver never
+  chose these versions, because it could not. The `Downgrade` job in `CI.yml`, new with this
+  change, runs the suite at exactly these floors.
 - **The test suite follows the shared layout.** `test/runtests.jl` holds only `@safetestset` lines
   in a `core` and a `slow` group; empty `ARGS` runs both. Its four inline testsets move, unchanged,
   into `test/tableau_lists.jl`, `test/standard-map.jl`, `test/guiding-center-4d.jl` and
