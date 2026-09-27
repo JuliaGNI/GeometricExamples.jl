@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The test suite follows the shared layout.** `test/runtests.jl` holds only `@safetestset` lines
+  in a `core` and a `slow` group; empty `ARGS` runs both. Its four inline testsets move, unchanged,
+  into `test/tableau_lists.jl`, `test/standard-map.jl`, `test/guiding-center-4d.jl` and
+  `test/guiding-center-4d-poincare.jl`, and the method lists and `integrates` they share into
+  `test/helpers/tableaus.jl`. `tableau_lists.jl` and `guiding-center-4d.jl` are in `slow`. The
+  test dependencies move from `[extras]`/`[targets]` into `test/Project.toml`, which also lists
+  the packages that the included `src/<problem>.jl` scripts load. A new `test/quality/aqua.jl` runs
+  Aqua; its `stale_deps` check is `@test_broken` (#7), because ChargedParticleDynamics, Documenter,
+  PoincareInvariants and Weave are used only by the scripts and by `docs/`. LinearAlgebra, Logging
+  and Markdown get the `[compat]` bound `"1"`, which Aqua's `deps_compat` requires. The weave smoke
+  script, which holds no test and which `runtests.jl` never ran, moves from `test/test_scripts.jl`
+  to `scripts/test_scripts.jl`. No source file changes.
 - **`[compat]` accepts SimpleSolvers 0.13 and GeometricProblems 0.9.** The two bounds widen rather
   than move: `SimpleSolvers = "0.11, 0.13"` and `GeometricProblems = "0.8, 0.9"`, so an environment
   that resolves the older pair still resolves. This combines the two open CompatHelper pull
