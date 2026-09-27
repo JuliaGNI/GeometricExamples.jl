@@ -34,13 +34,10 @@ GeometricIntegrators = "0.18"
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
 GeometricIntegratorsBase = "0.6"
 GeometricProblems = "0.8, 0.9"
+LinearAlgebra = "1"
+Logging = "1"
+Markdown = "1"
 PoincareInvariants = "0.5"
 SimpleSolvers = "0.11, 0.13"
 Weave = "0.10"
 julia = "1.10"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]

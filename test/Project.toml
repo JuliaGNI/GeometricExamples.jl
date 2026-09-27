@@ -1,0 +1,18 @@
+[deps]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+ChargedParticleDynamics = "209b3593-7183-5600-9f8f-df5ce7fddd64"
+GeometricIntegrators = "dcce2d33-59f6-5b8d-9047-0defad88ae06"
+GeometricProblems = "18cb22b4-ad41-5c80-9c5f-710df63fbdc9"
+Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
+PoincareInvariants = "26663084-47d3-540f-bd97-40ca743aafa4"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+CairoMakie = "0.15"
+ChargedParticleDynamics = "0.4"
+GeometricIntegrators = "0.18"
+GeometricProblems = "0.8, 0.9"
+Markdown = "1"
+PoincareInvariants = "0.5"

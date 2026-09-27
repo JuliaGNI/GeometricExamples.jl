@@ -2,7 +2,7 @@
 # Smoke test for the weave path: `run_list`, `run_convergence` and the Poincaré invariant drivers,
 # `integrate_partial`, and the whole CairoMakie plotting stack.
 #
-#   julia --project test/test_scripts.jl
+#   julia --project scripts/test_scripts.jl
 #
 # Not part of `runtests.jl`: it is comparatively slow and produces files.
 #
