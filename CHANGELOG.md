@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `test/guiding-center-4d-poincare.jl`, and the method lists and `integrates` they share into
   `test/helpers/tableaus.jl`. `tableau_lists.jl` and `guiding-center-4d.jl` are in `slow`. The
   test dependencies move from `[extras]`/`[targets]` into `test/Project.toml`, which also lists
-  the packages that the included `src/<problem>.jl` scripts load. A new `test/quality/aqua.jl` runs
+  the package's own dependencies, so that the included `src/<problem>.jl` scripts load. A new `test/quality/aqua.jl` runs
   Aqua; its `stale_deps` check is `@test_broken` (#7), because ChargedParticleDynamics, Documenter,
   PoincareInvariants and Weave are used only by the scripts and by `docs/`. LinearAlgebra, Logging
   and Markdown get the `[compat]` bound `"1"`, which Aqua's `deps_compat` requires. The weave smoke
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that uses any of them, and it keeps the unsuffixed name deliberately: the new method assumes a
   separable Hamiltonian, which the standard map is, and under that assumption takes the same two
   substeps in the same order without a nonlinear solve at all. The map is identical, and
-  `test/runtests.jl` pins it against the closed form.
+  `test/standard-map.jl` pins it against the closed form.
 
 - **`max_iterations = 100` stays, again.** GeometricIntegratorsBase 0.6 added `f_stall_window = 50`
   to its `default_options` — retire a solve that spends fifty iterations without halving its
