@@ -87,7 +87,7 @@ function run_convergence(problem, name, list, invariants = (), plot_dir = PLOT_D
 
         for i in eachindex(h)
             prob = similar(problem; timestep = h[i])
-            sol, last_good, err = integrate_partial(prob, method)
+            sol, _, err = integrate_partial(prob, method)
 
             if err === nothing
                 push!(good, i)

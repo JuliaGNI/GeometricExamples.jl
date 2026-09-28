@@ -20,7 +20,7 @@ const tableaus_iode = (
 # integrator (`VPRKpInternal`), is a documented outcome and not a test failure. What *is* a failure
 # is a method that cannot be built at all — the list naming something the ecosystem no longer has.
 function integrates(problem, method)
-    sol, last_good, err = integrate_partial(problem, method)
+    _, _, err = integrate_partial(problem, method)
     err isa UndefVarError && return false
     return true
 end
