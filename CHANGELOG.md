@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Two lower bounds are raised to versions that can install.** On Julia 1.10, with each other
+  entry as written, the old floors do not resolve:
+
+  | entry | was | is | why the old floor fails |
+  |:--|:--|:--|:--|
+  | `GeometricIntegrators` | `0.18` | `0.18.1` | 0.18.0 needs `GeometricIntegratorsBase` 0.5 and `SimpleSolvers` 0.10, and this package admits neither |
+  | `Weave` | `0.10` | `0.10.11` | through `Highlights`, 0.10.0–0.10.10 cap `DocStringExtensions` at 0.8, and `Symbolics` 7, which `GeometricProblems` reaches through `EulerLagrange`, needs 0.9 |
+
+  All floors together resolve on 1.10.12. Nothing any user installs changes: the resolver never
+  chose these versions, because it could not. The `Downgrade` job in `CI.yml`, new with this
+  change, runs the suite at exactly these floors.
+- **`SimpleSolvers` 0.14 is admitted**: `"0.11, 0.13"` → `"0.11, 0.13, 0.14"`. SimpleSolvers 0.13.1
+  and later need Julia 1.11, so on the 1.10 floor the resolver still picks 0.13.0 or older, and
+  `julia = "1.10"` is unchanged. Dependabot's #9 made the change.
 - **The test suite follows the shared layout.** `test/runtests.jl` holds only `@safetestset` lines
   in a `core` and a `slow` group; empty `ARGS` runs both. Its four inline testsets move, unchanged,
   into `test/tableau_lists.jl`, `test/standard-map.jl`, `test/guiding-center-4d.jl` and

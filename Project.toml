@@ -28,8 +28,10 @@ Documenter = "1"
 # These three move together: GeometricIntegrators 0.18 requires GeometricIntegratorsBase 0.6, which
 # requires SimpleSolvers 0.11. 0.18 also renamed four Runge-Kutta methods with an `RK` suffix, to
 # make room for the integrators GeometricIntegratorsBase gained of the same name — `SymplecticEulerA`
-# is now the latter's explicit method, which is what `src/standard-map.jl` runs.
-GeometricIntegrators = "0.18"
+# is now the latter's explicit method, which is what `src/standard-map.jl` runs. The floor is 0.18.1
+# because 0.18.0 requires GeometricIntegratorsBase 0.5 and SimpleSolvers 0.10, and neither is
+# admitted here.
+GeometricIntegrators = "0.18.1"
 # 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
 GeometricIntegratorsBase = "0.6"
@@ -39,5 +41,5 @@ Logging = "1"
 Markdown = "1"
 PoincareInvariants = "0.5"
 SimpleSolvers = "0.11, 0.13, 0.14"
-Weave = "0.10"
+Weave = "0.10.11"
 julia = "1.10"
