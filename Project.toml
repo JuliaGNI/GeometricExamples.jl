@@ -23,7 +23,7 @@ CairoMakie = "0.15"
 # scheme and their `tspan`/`tstep` keywords to `timespan`/`timestep`, with no deprecation shims, and
 # brings `ElectromagneticFields` 0.8 with it — which through 0.7.0 corrects the orientation of `B`
 # in the cylindrical charts both tokamak equilibria here are built on. See `docs/src/index.md`.
-ChargedParticleDynamics = "0.4, 0.5"
+ChargedParticleDynamics = "0.4"
 Documenter = "1"
 # These three move together: GeometricIntegrators 0.18 requires GeometricIntegratorsBase 0.6, which
 # requires SimpleSolvers 0.11. 0.18 also renamed four Runge-Kutta methods with an `RK` suffix, to
