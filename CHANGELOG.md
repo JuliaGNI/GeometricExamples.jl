@@ -89,6 +89,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   vortices, both Lotka-Volterra gauges and the massless charged particle — not one step count or
   failure mode differs between `f_stall_window = 50` and `0`. The comment above `SOLVER_OPTIONS`
   records this alongside the earlier measurement.
+- **Unread results of `integrate_partial` are discarded as `_`.** In `run_convergence` and the
+  test helper `integrates`, the step count, and in the helper also the solution, were bound to
+  names that nothing read. Behaviour does not change; `fatou lint` now reports `src/` and `test/`
+  clean.
 
 ### Added
 
