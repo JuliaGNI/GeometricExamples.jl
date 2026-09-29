@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`test/Project.toml` no longer bounds the dependencies it shares with `Project.toml`.** Its
+  `[compat]` entries for `CairoMakie`, `ChargedParticleDynamics`, `GeometricIntegrators`,
+  `GeometricProblems`, `Markdown` and `PoincareInvariants` are removed. A test or docs environment
+  now carries a `[compat]` entry only for a dependency that the root `Project.toml` does not have,
+  so the root's bound is the only one for a shared dependency and no second copy can drift from it.
+- **`ChargedParticleDynamics` is narrowed to `"0.4"`**: `"0.4, 0.5"` → `"0.4"`. The removed test
+  entry `"0.4"` hid that the suite fails on 0.5: ChargedParticleDynamics 0.5 removes
+  `to_cartesian` and the field namespace that `src/guiding-center-4d-poincare.jl` calls, so
+  `test/guiding-center-4d-poincare.jl` errors. A later port to ChargedParticleDynamics 0.5 widens
+  the bound again.
 - **Two lower bounds are raised to versions that can install.** On Julia 1.10, with each other
   entry as written, the old floors do not resolve:
 
