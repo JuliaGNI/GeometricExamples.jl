@@ -5,6 +5,7 @@ using PoincareInvariants
 using CairoMakie
 
 using ChargedParticleDynamics
+using ElectromagneticFields: to_cartesian
 
 using Markdown
 
@@ -72,16 +73,17 @@ const NTRAJECTORIES = 10
 # adapters below gather those vectors out of the `EnsembleSolution` and drop the axis, as the
 # trajectory adapters in `src/guiding-center-4d.jl` do for the trajectory recipes.
 #
-# `to_cartesian` is injected into the equilibrium module by `ElectromagneticFields.@code`. It
-# takes the three spatial coordinates and ignores the guiding centre state's fourth component,
-# the parallel velocity, so the state vector can be passed to it whole. On `SymmetricField`,
-# whose coordinates are already cartesian, it is the identity.
+# `to_cartesian` is an accessor of the equilibrium's `FIELD`. It takes the three spatial
+# coordinates and ignores the guiding centre state's fourth component, the parallel velocity, so
+# the state's spatial slice `q[1:3]` is passed below. On `SymmetricField`, whose coordinates are
+# already cartesian, it is the identity.
 
 # One entry per saved time, each holding the coordinate of every ensemble member: the advected
 # loop or surface, sliced in time.
 function _cartesian_slices(sol, equ)
     ts = [sol[1].t[n] for n in 0:ntime(sol[1])]
-    slices = [[equ.to_cartesian(sol[j].t[n], sol[j].q[n]) for j in 1:nsamples(sol)]
+    slices = [[to_cartesian(equ.FIELD, sol[j].t[n], sol[j].q[n][1:3])
+               for j in 1:nsamples(sol)]
               for n in 0:ntime(sol[1])]
     coordinate(i) = [[point[i] for point in slice] for slice in slices]
     (ts, coordinate(1), coordinate(2), coordinate(3))
@@ -90,7 +92,8 @@ end
 # The same data by ensemble member instead of by time: the bundle of orbits the loop points
 # travel along.
 function _cartesian_orbits(sol, equ)
-    orbits = [[equ.to_cartesian(sol[j].t[n], sol[j].q[n]) for n in 0:ntime(sol[j])]
+    orbits = [[to_cartesian(equ.FIELD, sol[j].t[n], sol[j].q[n][1:3])
+               for n in 0:ntime(sol[j])]
               for j in 1:nsamples(sol)]
     coordinate(i) = [[point[i] for point in orbit] for orbit in orbits]
     (coordinate(1), coordinate(2), coordinate(3))

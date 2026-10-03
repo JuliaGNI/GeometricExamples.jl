@@ -65,6 +65,21 @@ const GCP = GuidingCenter4dPoincareExamples
         @test length(ts) == length(X) == length(Y) == length(Z) == 5
         @test all(length.(X) .== nsamples(sol))
 
+        # `_cartesian_slices` maps each state into cartesian coordinates through the equilibrium's
+        # field. On the tokamak the chart is `(R, Z, ϕ)`, so `hypot(X, Y)` recovers the first state
+        # component `R` and `Z` the second; on the symmetric field the chart is already cartesian
+        # and the map is the identity, exactly.
+        for ti in eachindex(X), j in eachindex(X[ti])
+
+            q = sol[j].q[ti - 1]
+            if geometry === :tokamak
+                @test hypot(X[ti][j], Y[ti][j]) ≈ q[1] rtol = 1e-12
+                @test Z[ti][j] ≈ q[2] rtol = 1e-12
+            else
+                @test (X[ti][j], Y[ti][j], Z[ti][j]) == (q[1], q[2], q[3])
+            end
+        end
+
         XT, YT, ZT = GCP._cartesian_orbits(sol, equ)
         @test length(XT) == length(YT) == length(ZT) == nsamples(sol)
         @test all(length.(XT) .== 5)

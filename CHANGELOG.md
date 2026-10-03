@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`ChargedParticleDynamics` 0.5 is supported again.** `"0.4"` → `"0.5.2"`: the two
+  guiding-centre modules read the field through the equilibrium's `FIELD` and its accessors
+  (`to_cartesian(field, t, q[1:3])`, `cartesian_solution(sol, field)`,
+  `plot_trajectory_poloidal(R, Z, field)` and the three-argument `toroidal_momentum(t, q, params)`),
+  which ChargedParticleDynamics 0.5 introduced in place of the field namespace it had injected into
+  the module. `ElectromagneticFields` becomes a direct dependency, bounded `"0.9.1"`. The floors
+  rise with it — `julia = "1.12"`, `GeometricIntegrators = "0.18.6"`,
+  `GeometricIntegratorsBase = "0.6.9"`, `GeometricProblems = "0.9.1"`,
+  `PoincareInvariants = "0.5.1"` and `SimpleSolvers = "0.14.1"` — because ChargedParticleDynamics
+  0.5.2 requires Julia 1.12 and the GeometricBase 0.15 releases. This widens the
+  `ChargedParticleDynamics` bound the 0.4 entry narrowed and replaces the 0.18.1 floor raised there.
 - **`test/Project.toml` no longer bounds the dependencies it shares with `Project.toml`.** Its
   `[compat]` entries for `CairoMakie`, `ChargedParticleDynamics`, `GeometricIntegrators`,
   `GeometricProblems`, `Markdown` and `PoincareInvariants` are removed. A test or docs environment

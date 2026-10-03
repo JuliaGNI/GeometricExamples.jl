@@ -16,9 +16,9 @@ using GeometricExamples
 # constructors to the `GeometricProblems` scheme those names also collide with the problem
 # modules of `GeometricProblems` itself, which is a second reason to keep them qualified.
 #
-# `ElectromagneticFields.@code` injects the magnetic field into the module itself, so the module
-# *is* the equilibrium: `equ.R`, `.X`, `.Y`, `.Z` are its coordinate functions, and
-# `cartesian_solution` and `plot_trajectory_poloidal` take it as an argument.
+# Each equilibrium module holds its field as `FIELD`, a `FieldFunctions`; the cartesian
+# coordinates and the chart map are accessors of that field. `cartesian_solution` and
+# `plot_trajectory_poloidal` take the field as an argument.
 const EQUILIBRIA = (
     medium = ChargedParticleDynamics.GuidingCenter4d.TokamakMediumCylindrical,
     small = ChargedParticleDynamics.GuidingCenter4d.TokamakSmallCylindrical
@@ -104,16 +104,16 @@ _component(sol, idx, i) = [sol.q[n][i] for n in idx]
 "Poloidal `R`–`Z` projection of the orbit, over the equilibrium's flux surfaces."
 function plot_solution(equ, sol; nplot = 1, nt = :auto, latex = false)
     idx = _indices(sol, nplot, nt)
-    plot_trajectory_poloidal(_component(sol, idx, 1), _component(sol, idx, 2), equ)[1]
+    plot_trajectory_poloidal(_component(sol, idx, 1), _component(sol, idx, 2), equ.FIELD)[1]
 end
 
-# The cartesian coordinates come from `cartesian_solution` rather than from the equilibrium's
-# `X`/`Y`/`Z` directly: those take the three *spatial* coordinates, and the guiding centre state
-# carries the parallel velocity as its fourth component.
+# The cartesian coordinates come from `cartesian_solution(sol, equ.FIELD)`, which reads the three
+# *spatial* components of the state; the guiding centre state carries the parallel velocity as
+# its fourth component.
 "The orbit in cartesian 3-space."
 function plot_phase_portrait(equ, sol; nplot = 1, nt = :auto, latex = false)
     idx = _indices(sol, nplot, nt)
-    cs = cartesian_solution(sol, equ)
+    cs = cartesian_solution(sol, equ.FIELD)
     plot_trajectory_3d([cs.X[n] for n in idx], [cs.Y[n] for n in idx], [cs.Z[n]
                                                                         for n in idx])[1]
 end
@@ -136,7 +136,7 @@ function plot_recipes(equ)
     (solution = (sol, _prob; kwargs...) -> plot_solution(equ, sol; kwargs...),
         phase_portrait = (sol; kwargs...) -> plot_phase_portrait(equ, sol; kwargs...),
         traces = (sol, _prob; kwargs...) -> plot_traces(equ, sol; kwargs...),
-        invariants = (((t, q, params) -> equ.toroidal_momentum(t, q),
+        invariants = (((t, q, params) -> equ.toroidal_momentum(t, q, params),
             "toroidal_momentum", "Toroidal Momentum"),))
 end
 
