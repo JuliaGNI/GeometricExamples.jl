@@ -84,6 +84,19 @@ const GCP = GuidingCenter4dPoincareExamples
         @test length(XT) == length(YT) == length(ZT) == nsamples(sol)
         @test all(length.(XT) .== 5)
 
+        # `_cartesian_orbits` maps the states through the same field as `_cartesian_slices`, by
+        # ensemble member instead of by time, so it obeys the same relations.
+        for j in eachindex(XT), k in eachindex(XT[j])
+
+            q = sol[j].q[k - 1]
+            if geometry === :tokamak
+                @test hypot(XT[j][k], YT[j][k]) ≈ q[1] rtol = 1e-12
+                @test ZT[j][k] ≈ q[2] rtol = 1e-12
+            else
+                @test (XT[j][k], YT[j][k], ZT[j][k]) == (q[1], q[2], q[3])
+            end
+        end
+
         # `plot_invariant` has to be qualified: `ChargedParticleDynamics` exports one of its own.
         @test PoincareInvariants.plot_invariant(pinv, "Δt = $(Δt)" => sol;
             p = parameters(prob)) isa Figure

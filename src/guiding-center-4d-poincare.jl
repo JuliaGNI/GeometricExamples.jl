@@ -74,9 +74,9 @@ const NTRAJECTORIES = 10
 # trajectory adapters in `src/guiding-center-4d.jl` do for the trajectory recipes.
 #
 # `to_cartesian` is an accessor of the equilibrium's `FIELD`. It takes the three spatial
-# coordinates and ignores the guiding centre state's fourth component, the parallel velocity, so
-# the state's spatial slice `q[1:3]` is passed below. On `SymmetricField`, whose coordinates are
-# already cartesian, it is the identity.
+# coordinates and rejects a four-component state — the guiding centre state carries the parallel
+# velocity as its fourth component — so the state's spatial slice `q[1:3]` is passed below. On
+# `SymmetricField`, whose coordinates are already cartesian, it is the identity.
 
 # One entry per saved time, each holding the coordinate of every ensemble member: the advected
 # loop or surface, sliced in time.

@@ -130,13 +130,13 @@ end
 # since it is a property of the case and not of the solution.
 #
 # The toroidal momentum is the guiding centre's second invariant. The problems do not declare it
-# among their `invariants` — only the energy `:h` — so it is passed as the function itself,
-# wrapped to the `(t, q, params)` signature `compute_invariant` calls it with.
+# among their `invariants` — only the energy `:h` — so it is passed as the function itself, whose
+# `(t, q, params)` signature is the one `compute_invariant` calls it with.
 function plot_recipes(equ)
     (solution = (sol, _prob; kwargs...) -> plot_solution(equ, sol; kwargs...),
         phase_portrait = (sol; kwargs...) -> plot_phase_portrait(equ, sol; kwargs...),
         traces = (sol, _prob; kwargs...) -> plot_traces(equ, sol; kwargs...),
-        invariants = (((t, q, params) -> equ.toroidal_momentum(t, q, params),
+        invariants = ((equ.toroidal_momentum,
             "toroidal_momentum", "Toroidal Momentum"),))
 end
 
