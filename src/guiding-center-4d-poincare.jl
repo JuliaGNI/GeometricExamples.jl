@@ -75,14 +75,14 @@ const NTRAJECTORIES = 10
 #
 # `to_cartesian` is an accessor of the equilibrium's `FIELD`. It takes the three spatial
 # coordinates and rejects a four-component state — the guiding centre state carries the parallel
-# velocity as its fourth component — so the state's spatial slice `q[1:3]` is passed below. On
+# velocity as its fourth component — so a view of the spatial slice `q[1:3]` is passed below. On
 # `SymmetricField`, whose coordinates are already cartesian, it is the identity.
 
 # One entry per saved time, each holding the coordinate of every ensemble member: the advected
 # loop or surface, sliced in time.
 function _cartesian_slices(sol, equ)
     ts = [sol[1].t[n] for n in 0:ntime(sol[1])]
-    slices = [[to_cartesian(equ.FIELD, sol[j].t[n], sol[j].q[n][1:3])
+    slices = [[to_cartesian(equ.FIELD, sol[j].t[n], @view sol[j].q[n][1:3])
                for j in 1:nsamples(sol)]
               for n in 0:ntime(sol[1])]
     coordinate(i) = [[point[i] for point in slice] for slice in slices]
@@ -92,7 +92,7 @@ end
 # The same data by ensemble member instead of by time: the bundle of orbits the loop points
 # travel along.
 function _cartesian_orbits(sol, equ)
-    orbits = [[to_cartesian(equ.FIELD, sol[j].t[n], sol[j].q[n][1:3])
+    orbits = [[to_cartesian(equ.FIELD, sol[j].t[n], @view sol[j].q[n][1:3])
                for n in 0:ntime(sol[j])]
               for j in 1:nsamples(sol)]
     coordinate(i) = [[point[i] for point in orbit] for orbit in orbits]

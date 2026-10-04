@@ -22,13 +22,13 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 CairoMakie = "0.15"
 # 0.5 removes the injected field namespace: an equilibrium module holds its field as `FIELD`, and
 # `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` read its accessors. 0.5.2
-# requires Julia 1.12 and the GeometricBase 0.15 releases below, which is why the floors move with
-# it.
+# requires Julia 1.12 and the GeometricBase 0.15 releases below, which set the `julia` floor and
+# the floors of those entries.
 ChargedParticleDynamics = "0.5.2"
 Documenter = "1"
 ElectromagneticFields = "0.9.1"
-# Raised with GeometricIntegratorsBase and SimpleSolvers to the GeometricBase 0.15 line that
-# ChargedParticleDynamics 0.5.2 requires; the three move together.
+# GeometricIntegrators, GeometricIntegratorsBase and SimpleSolvers sit on the GeometricBase 0.15
+# line that ChargedParticleDynamics 0.5.2 requires; the three move together.
 GeometricIntegrators = "0.18.6"
 # 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
