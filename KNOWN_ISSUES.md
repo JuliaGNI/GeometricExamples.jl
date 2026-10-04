@@ -25,4 +25,4 @@
   -0.17184534083074765, on `origin/main` (ChargedParticleDynamics 0.4.1) and on this branch
   (0.5.2) alike. Fix: correct the value.
 - **kind:** docs
-- **found:** 2026-07-25 (`0cdf5b008`, "Rebuild the guiding-centre Poincaré integral invariants")
+- **found:** 2026-10-04
