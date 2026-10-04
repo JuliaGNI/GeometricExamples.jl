@@ -149,13 +149,13 @@ two-form, on an advected surface sampled at Padua points.
 ## Known Gaps
 
 This gallery was modernized from the 2018–2020 JuliaGNI ecosystem to GeometricIntegrators 0.18 /
-GeometricProblems 0.8 / ChargedParticleDynamics 0.4 / PoincareInvariants 0.5 / CairoMakie 0.15. A
+GeometricProblems 0.9 / ChargedParticleDynamics 0.5 / PoincareInvariants 0.5 / CairoMakie 0.15. A
 few things it used to cover have no counterpart in the current stack and are recorded here rather
 than quietly dropped.
 
 * **The guiding-centre orbits changed direction.**
-  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) 0.4
-  requires [ElectromagneticFields.jl](https://github.com/JuliaPlasma/ElectromagneticFields.jl) 0.8,
+  [ChargedParticleDynamics.jl](https://github.com/JuliaPlasma/ChargedParticleDynamics.jl) 0.5
+  requires [ElectromagneticFields.jl](https://github.com/JuliaPlasma/ElectromagneticFields.jl) 0.9,
   whose 0.7.0 release corrected an orientation error in the Hodge star: the volume element was
   taken unsigned, which reversed ``B`` in the four left-handed charts. Both equilibria used here —
   the medium and small tokamaks in cylindrical ``(R, Z, \varphi)`` coordinates — are among them, so
@@ -171,8 +171,10 @@ than quietly dropped.
   pages call were renamed in 0.3 to the `GeometricProblems` scheme with no deprecation shims —
   `guiding_center_4d_ode` → `odeproblem`, `guiding_center_4d_loop_ode` → `loop_odeproblem`,
   `tspan`/`tstep` → `timespan`/`timestep`, and `initial_conditions_*` now returning a named tuple
-  the constructors take whole. `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl`
-  follow that scheme.
+  the constructors take whole. The module constructors keep those call forms in
+  ChargedParticleDynamics 0.5, where the field travels in `params.field` in place of the injected
+  field namespace. `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` follow that
+  scheme.
 * **The 3d charged particle** is not rebuilt. It was already broken before the modernization: its
   pre-0.2 scripts `include` settings and driver files that do not exist in their directory, so they
   cannot have run, and what was intended is not recoverable from them. Those scripts have since been

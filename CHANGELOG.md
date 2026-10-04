@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The *Known Gaps* documentation page tracks the 0.5 stack.** `docs/src/index.md` names
+  GeometricProblems 0.9 and ChargedParticleDynamics 0.5 on the stack line, ElectromagneticFields
+  0.9 in the orientation bullet, and records that the module constructors keep their 0.4 call
+  forms with the field in `params.field`. The 0.4 orientation history is unchanged.
 - **`ChargedParticleDynamics` 0.5 is supported again.** `"0.4"` → `"0.5.2"`: the two
   guiding-centre modules read the field through the equilibrium's `FIELD` and its accessors
   (`to_cartesian(field, t, q[1:3])`, `cartesian_solution(sol, field)`,
