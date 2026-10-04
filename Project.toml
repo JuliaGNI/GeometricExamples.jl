@@ -7,6 +7,7 @@ authors = ["Michael Kraus <michael.kraus@ipp.mpg.de>"]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 ChargedParticleDynamics = "209b3593-7183-5600-9f8f-df5ce7fddd64"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ElectromagneticFields = "d6c1ba6f-ee03-53af-b876-68cefeb88ec8"
 GeometricIntegrators = "dcce2d33-59f6-5b8d-9047-0defad88ae06"
 GeometricIntegratorsBase = "71212ab4-08a2-48eb-a02b-4cbad0e9c44a"
 GeometricProblems = "18cb22b4-ad41-5c80-9c5f-710df63fbdc9"
@@ -19,27 +20,24 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
 CairoMakie = "0.15"
-# 0.4 renamed every problem constructor of the guiding-centre modules to the `GeometricProblems`
-# scheme and their `tspan`/`tstep` keywords to `timespan`/`timestep`, with no deprecation shims, and
-# brings `ElectromagneticFields` 0.8 with it — which through 0.7.0 corrects the orientation of `B`
-# in the cylindrical charts both tokamak equilibria here are built on. See `docs/src/index.md`.
-ChargedParticleDynamics = "0.4"
+# 0.5 removes the injected field namespace: an equilibrium module holds its field as `FIELD`, and
+# `src/guiding-center-4d.jl` and `src/guiding-center-4d-poincare.jl` read its accessors. 0.5.2
+# requires Julia 1.12 and the GeometricBase 0.15 releases below, which set the `julia` floor and
+# the floors of those entries.
+ChargedParticleDynamics = "0.5.2"
 Documenter = "1"
-# These three move together: GeometricIntegrators 0.18 requires GeometricIntegratorsBase 0.6, which
-# requires SimpleSolvers 0.11. 0.18 also renamed four Runge-Kutta methods with an `RK` suffix, to
-# make room for the integrators GeometricIntegratorsBase gained of the same name — `SymplecticEulerA`
-# is now the latter's explicit method, which is what `src/standard-map.jl` runs. The floor is 0.18.1
-# because 0.18.0 requires GeometricIntegratorsBase 0.5 and SimpleSolvers 0.10, and neither is
-# admitted here.
-GeometricIntegrators = "0.18.1"
+ElectromagneticFields = "0.9.1"
+# GeometricIntegrators, GeometricIntegratorsBase and SimpleSolvers sit on the GeometricBase 0.15
+# line that ChargedParticleDynamics 0.5.2 requires; the three move together.
+GeometricIntegrators = "0.18.6"
 # 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
-GeometricIntegratorsBase = "0.6"
-GeometricProblems = "0.8, 0.9"
+GeometricIntegratorsBase = "0.6.9"
+GeometricProblems = "0.9.1"
 LinearAlgebra = "1"
 Logging = "1"
 Markdown = "1"
-PoincareInvariants = "0.5"
-SimpleSolvers = "0.11, 0.13, 0.14"
+PoincareInvariants = "0.5.1"
+SimpleSolvers = "0.14.1"
 Weave = "0.10.11"
-julia = "1.10"
+julia = "1.12"

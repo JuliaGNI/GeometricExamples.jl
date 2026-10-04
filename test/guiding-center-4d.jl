@@ -1,6 +1,7 @@
 using Test
 using GeometricIntegrators
 using GeometricExamples
+using ElectromagneticFields: A♭, b♭
 
 include("helpers/tableaus.jl")
 
@@ -55,6 +56,15 @@ include("../src/guiding-center-4d.jl")
         @test recipes.solution(sol, nothing; latex = false) isa Figure
         @test recipes.phase_portrait(sol; latex = false) isa Figure
         @test recipes.traces(sol, nothing; latex = false) isa Figure
-        @test recipes.invariants[1][1](0.0, sol.q[0], nothing) isa Real
+
+        # The invariant is the equilibrium's toroidal momentum, the one-form component
+        # `ϑ₃ = A₃ + u b₃`, evaluated with the problem's parameters. The two sides evaluate the
+        # same component at the same point by different routes, so they agree to round-off.
+        F = equ.FIELD
+        params = parameters(sol.problem)
+        for (t, q) in ((sol.t[0], sol.q[0]), (sol.t[end], sol.q[end]))
+            @test recipes.invariants[1][1](t, q, params) ≈
+                  A♭(F, t, q[1:3])[3] + q[4] * b♭(F, t, q[1:3])[3] rtol = 1e-12
+        end
     end
 end
