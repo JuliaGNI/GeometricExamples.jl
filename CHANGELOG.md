@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CI uploads coverage from the `Julia 1 - ubuntu-latest` job.** It was the `Julia min` job. A test
+  job also saves the Julia cache only when it succeeds, so a cancelled or failed job leaves no
+  partial cache for the next run to restore.
 - **The *Known Gaps* documentation page tracks the 0.5 stack.** `docs/src/index.md` names
   GeometricProblems 0.9 and ChargedParticleDynamics 0.5 on the stack line, ElectromagneticFields
   0.9 in the orientation bullet, and records that the module constructors keep their 0.4 call
