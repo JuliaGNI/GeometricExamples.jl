@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`test/Project.toml` bounds its two test-only dependencies**: `Aqua = "0.8.18"` and
+  `SafeTestsets = "0.1"`. The `Downgrade` job resolves `Project.toml` and `test/Project.toml`
+  together at their lower bounds, so a test dependency without a `[compat]` entry resolves to its
+  oldest release, Aqua 0.1.0. `test/quality/aqua.jl` calls `Aqua.find_stale_deps`, which Aqua
+  0.8.3 introduced, and four later fixes are needed for `Aqua.test_all` to pass on Julia 1.12 at
+  the floors: from 0.8.9 the ambiguity test checks the package alone, where earlier releases add
+  `Base` and `Core` and report 158 ambiguities between dependencies and `Base`; from 0.8.14 the
+  piracy test reads `Core.methodtable`, where earlier releases read the `TypeName.mt` field that
+  Julia 1.12 removes; from 0.8.17 the persistent-task test loads the package from the current
+  manifest and limits only its shutdown to 30 s, where Aqua 0.8.14 fails the check for this
+  package; and from 0.8.18 that test skips a weak dependency that is also listed in `[deps]`,
+  where Aqua 0.8.17 stops with "Unable to locate `ChangesOfVariables`, a dependency of
+  `LogExpFunctions`".
 - **CI uploads coverage from the `Julia 1 - ubuntu-latest` job.** It was the `Julia min` job. A test
   job also saves the Julia cache only when it succeeds, so a cancelled or failed job leaves no
   partial cache for the next run to restore.
