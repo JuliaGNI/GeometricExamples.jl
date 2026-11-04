@@ -32,11 +32,11 @@ Hamiltonian Dynamics* (2004): B evaluates the Hamiltonian at `(q_n, p_{n+1})`.
 `p_{n+1} = p_n + K sin(θ_{n+1})`, which is a different — equally symplectic — map.
 
 That name is `GeometricIntegratorsBase`'s method rather than the partitioned Runge-Kutta
-one, which has the suffix `SymplecticEulerBRK`. It is the better fit here: it assumes a *separable* Hamiltonian, which is exactly
-what this problem is — `v = v(p)` and `f = f(θ)` above — and under that assumption the two
-substeps decouple and are taken explicitly, with no nonlinear solve at all. The map it
-produces is the same one, so the identity above is unaffected; `test/runtests.jl` pins it
-against the closed form.
+one, which has the suffix `SymplecticEulerBRK`. It is the better fit here: it assumes a
+*separable* Hamiltonian, which is exactly what this problem is — `v = v(p)` and `f = f(θ)`
+above — and under that assumption the two substeps decouple and are taken explicitly, with no
+nonlinear solve at all. The map it produces is the same one, so the identity above is
+unaffected; `test/runtests.jl` pins it against the closed form.
 
 The map is not a `GeometricProblems` problem, so it lives here. It would fit
 `GeometricProblems.jl` well, but that package collects *flows*, not maps, and the identity
