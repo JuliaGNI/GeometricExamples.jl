@@ -23,17 +23,16 @@ written as the partitioned ODE
 \dot{\theta} = p , \qquad \dot{p} = K \sin (\theta) ,
 ```
 
-which [`SymplecticEulerA`](@ref) with unit time step integrates *exactly* into the map above:
+which [`SymplecticEulerB`](@ref) with unit time step integrates *exactly* into the map above:
 it takes the momentum step first, `p_{n+1} = p_n + K sin(θ_n)`, and then the position step
 with the new momentum, `θ_{n+1} = θ_n + p_{n+1}`. `Δt = 1` is therefore not a discretisation
-parameter but part of the model. (The pre-0.2 gallery named this method
-`getTableauSymplecticEulerB`; the A/B naming has swapped since. `SymplecticEulerB` gives the
-conjugate map `θ_{n+1} = θ_n + p_n`, `p_{n+1} = p_n + K sin(θ_{n+1})`, which is a different
-— equally symplectic — map.)
+parameter but part of the model. The letters are those of Leimkuhler and Reich, *Simulating
+Hamiltonian Dynamics* (2004): B evaluates the Hamiltonian at `(q_n, p_{n+1})`.
+`SymplecticEulerA` gives the conjugate map `θ_{n+1} = θ_n + p_n`,
+`p_{n+1} = p_n + K sin(θ_{n+1})`, which is a different — equally symplectic — map.
 
-Since GeometricIntegrators 0.18 that name is `GeometricIntegratorsBase`'s method rather than
-the partitioned Runge-Kutta one, which took the suffix `SymplecticEulerARK` when the two
-collided. It is the better fit here: it assumes a *separable* Hamiltonian, which is exactly
+That name is `GeometricIntegratorsBase`'s method rather than the partitioned Runge-Kutta
+one, which has the suffix `SymplecticEulerBRK`. It is the better fit here: it assumes a *separable* Hamiltonian, which is exactly
 what this problem is — `v = v(p)` and `f = f(θ)` above — and under that assumption the two
 substeps decouple and are taken explicitly, with no nonlinear solve at all. The map it
 produces is the same one, so the identity above is unaffected; `test/runtests.jl` pins it
@@ -127,7 +126,7 @@ function run_poincare_2nd(name = "Standard Map"; plot_dir = PLOT_DIR, fig_suff =
     grid = CanonicalSecondPI{Float64, 2}(NSURFACE, SecondFinDiffPlan)
 
     _run_invariant(pinv, name, "poincare_2nd", plot_dir, fig_suff) do prob, _, file
-        gridsol = integrate(PIEnsembleProblem(prob, grid, surface), SymplecticEulerA())
+        gridsol = integrate(PIEnsembleProblem(prob, grid, surface), SymplecticEulerB())
         _save_plot(
             () -> plot_surface(grid, gridsol; xlabel = "θ", ylabel = "p", nsteps = NPLOT),
             plot_dir, file, "_surface", fig_suff)
@@ -149,9 +148,9 @@ function _run_invariant(extra, pinv, name, stem, plot_dir, fig_suff)
         show(stdout, "text/markdown", Markdown.parse("[Plots]($file.md)"))
         _linebreak(stdout)
 
-        # `SymplecticEulerA` with unit time step integrates the standard map exactly, see
+        # `SymplecticEulerB` with unit time step integrates the standard map exactly, see
         # `podeproblem`.
-        sol = integrate(PIEnsembleProblem(prob, pinv, _parameterisation(pinv)), SymplecticEulerA())
+        sol = integrate(PIEnsembleProblem(prob, pinv, _parameterisation(pinv)), SymplecticEulerB())
 
         _save_plot(() -> plot_invariant(pinv, sol; title = "K = $(K)"),
             plot_dir, file, "_invariant", fig_suff)
