@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The standard map uses `SymplecticEulerB`.** GeometricIntegrators 0.19 and
+  GeometricIntegratorsBase 0.7 follow the letters of Leimkuhler and Reich (2004), and exchange the
+  meaning of `SymplecticEulerA` and `SymplecticEulerB`. B evaluates at `(q_n, p_{n+1})`: it takes
+  the momentum step first, which is the standard map with unit time step. `src/standard-map.jl`
+  and `test/standard-map.jl` call `SymplecticEulerB`, so the map and the invariants it advects
+  are the same as before. The identity test starts at `(θ, p) = (0.5, 0.3)` instead of `(0, 0)`:
+  the origin is a fixed point of the map, so the test passed for either letter. The floors rise to `GeometricIntegrators = "0.19"` and
+  `GeometricIntegratorsBase = "0.7"`.
 - **`test/Project.toml` bounds its two test-only dependencies**: `Aqua = "0.8.18"` and
   `SafeTestsets = "0.1"`. The `Downgrade` job resolves `Project.toml` and `test/Project.toml`
   together at their lower bounds, so a test dependency without a `[compat]` entry resolves to its

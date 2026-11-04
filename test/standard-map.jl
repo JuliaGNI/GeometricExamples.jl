@@ -10,15 +10,17 @@ include("../src/standard-map.jl")
 @testset "Standard Map" begin
     using PoincareInvariants
 
-    prob = StandardMapExamples.podeproblem(; K = 1.2, timespan = (0.0, 5.0), timestep = 1.0)
+    # (0, 0) is a fixed point of the map, so the two letters agree there: start elsewhere.
+    prob = StandardMapExamples.podeproblem([0.5], [0.3]; K = 1.2, timespan = (0.0, 5.0),
+        timestep = 1.0)
 
-    # SymplecticEulerA with unit time step *is* the standard map, so check that identity here: it
+    # SymplecticEulerB with unit time step *is* the standard map, so check that identity here: it
     # is the one assumption of the whole example that is neither GeometricIntegrators' nor ours.
-    # Since GeometricIntegrators 0.18 the name resolves to GeometricIntegratorsBase's explicit
-    # method for separable Hamiltonians rather than to the partitioned Runge-Kutta one, now
-    # `SymplecticEulerARK`; this assertion is what says the substitution kept the map intact.
-    sol = integrate(prob, SymplecticEulerA())
-    θ, p = 0.0, 0.0
+    # The name resolves to GeometricIntegratorsBase's explicit method for separable Hamiltonians,
+    # not to the partitioned Runge-Kutta one, `SymplecticEulerBRK`; this assertion is what says
+    # which of the two letters is the map.
+    sol = integrate(prob, SymplecticEulerB())
+    θ, p = 0.5, 0.3
     for n in 1:5
         p += 1.2 * sin(θ)
         θ += p
@@ -35,12 +37,12 @@ include("../src/standard-map.jl")
 
     pi1 = CanonicalFirstPI{Float64, 2}(2000)
     I1 = compute!(pi1, integrate(PIEnsembleProblem(regular, pi1, StandardMapExamples.loop),
-        SymplecticEulerA()))
+        SymplecticEulerB()))
     @test maximum(abs, (I1 .- I1[1]) ./ I1[1]) < 1E-13
 
     pi2 = CanonicalSecondPI{Float64, 2}(2000)
     I2 = compute!(pi2,
         integrate(PIEnsembleProblem(regular, pi2, StandardMapExamples.surface),
-            SymplecticEulerA()))
+            SymplecticEulerB()))
     @test maximum(abs, (I2 .- I2[1]) ./ I2[1]) < 1E-10
 end
