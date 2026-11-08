@@ -33,7 +33,7 @@ GeometricIntegrators = "0.19"
 # 0.6 adds `f_stall_window = 50` to `default_options`, which is merged into the options
 # `src/common.jl` passes; see the note above `SOLVER_OPTIONS` there.
 GeometricIntegratorsBase = "0.7"
-GeometricProblems = "0.9.1"
+GeometricProblems = "0.9.1, 0.10"
 LinearAlgebra = "1"
 Logging = "1"
 Markdown = "1"
